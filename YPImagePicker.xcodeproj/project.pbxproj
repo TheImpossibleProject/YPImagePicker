@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14E1FDBC22CE37E300570C86 /* Stevia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E1FDBB22CE37E300570C86 /* Stevia.framework */; };
+		14E1FDBE22CE37EA00570C86 /* PryntTrimmerView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E1FDBD22CE37EA00570C86 /* PryntTrimmerView.framework */; };
 		8458057421819B95004F241C /* YPImagePickerLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 99C6D6991F1FB5C100711DB2 /* YPImagePickerLocalizable.strings */; };
 		99019E4C2018CCD6007325C2 /* YPBottomPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E4B2018CCD6007325C2 /* YPBottomPagerView.swift */; };
 		99019E4E2018CD31007325C2 /* YPPagerMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E4D2018CD31007325C2 /* YPPagerMenu.swift */; };
@@ -95,6 +97,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		14E1FDBB22CE37E300570C86 /* Stevia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Stevia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14E1FDBD22CE37EA00570C86 /* PryntTrimmerView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PryntTrimmerView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16550C5C214D5EE60090BADF /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/YPImagePickerLocalizable.strings; sourceTree = "<group>"; };
 		3B0E1B962070669B0048E95B /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/YPImagePickerLocalizable.strings; sourceTree = "<group>"; };
 		4EA67521208A45080076D4E3 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/YPImagePickerLocalizable.strings; sourceTree = "<group>"; };
@@ -204,6 +208,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14E1FDBE22CE37EA00570C86 /* PryntTrimmerView.framework in Frameworks */,
+				14E1FDBC22CE37E300570C86 /* Stevia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +378,8 @@
 		EB3251DE20878D5900A6190D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				14E1FDBD22CE37EA00570C86 /* PryntTrimmerView.framework */,
+				14E1FDBB22CE37E300570C86 /* Stevia.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
