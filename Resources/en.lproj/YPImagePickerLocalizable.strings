@@ -4,14 +4,14 @@
 "YPImagePickerCrop" = "Crop";
 "YPImagePickerDone" = "Done";
 "YPImagePickerFilter" = "Filter";
-"YPImagePickerLibrary" = "Library";
+"YPImagePickerLibrary" = "Camera Roll";
 "YPImagePickerNext" = "Next";
 "YPImagePickerOk" = "Ok";
 "YPImagePickerPermissionDeniedPopupCancel" = "Cancel";
 "YPImagePickerPermissionDeniedPopupGrantPermission" = "Grant Permission";
 "YPImagePickerPermissionDeniedPopupMessage" = "Please allow access";
 "YPImagePickerPermissionDeniedPopupTitle" = "Permission denied";
-"YPImagePickerPhoto" = "Photo";
+"YPImagePickerPhoto" = "Camera";
 "YPImagePickerProcessing" = "Processing..";
 "YPImagePickerSave" = "Save";
 "YPImagePickerTrim" = "Trim";
