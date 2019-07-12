@@ -14,4 +14,5 @@ struct YPAlbum {
     var title: String = ""
     var numberOfItems: Int = 0
     var collection: PHAssetCollection?
+    var isAllPhotos: Bool = false
 }

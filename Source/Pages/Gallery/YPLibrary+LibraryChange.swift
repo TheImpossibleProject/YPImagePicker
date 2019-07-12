@@ -16,10 +16,10 @@ extension YPLibraryVC: PHPhotoLibraryChangeObserver {
     
     public func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {
-            let fetchResult = self.mediaManager.fetchResult!
+            let fetchResult = (self.mediaManager as! LibraryMediaManager).fetchResult!
             let collectionChanges = changeInstance.changeDetails(for: fetchResult)
             if collectionChanges != nil {
-                self.mediaManager.fetchResult = collectionChanges!.fetchResultAfterChanges
+                self.mediaManager.set(fetchResult: collectionChanges!.fetchResultAfterChanges)
                 let collectionView = self.v.collectionView!
                 if !collectionChanges!.hasIncrementalChanges || collectionChanges!.hasMoves {
                     collectionView.reloadData()
@@ -42,7 +42,7 @@ extension YPLibraryVC: PHPhotoLibraryChangeObserver {
                         }
                     })
                 }
-                self.mediaManager.resetCachedAssets()
+                (self.mediaManager as! LibraryMediaManager).resetCachedAssets()
             }
         }
     }

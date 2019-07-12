@@ -21,17 +21,16 @@ class YPAlbumsManager {
         var albums = [YPAlbum]()
         let options = PHFetchOptions()
         
-        let smartAlbumsResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum,
-                                                                        subtype: .any,
-                                                                        options: options)
-        let albumsResult = PHAssetCollection.fetchAssetCollections(with: .album,
-                                                                   subtype: .any,
-                                                                   options: options)
+        let allPhotos = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
+        let smartAlbumsResult = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .any, options: options)
+        let albumsResult = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: options)
+        
         for result in [smartAlbumsResult, albumsResult] {
             result.enumerateObjects({ assetCollection, _, _ in
                 var album = YPAlbum()
                 album.title = assetCollection.localizedTitle ?? ""
                 album.numberOfItems = self.mediaCountFor(collection: assetCollection)
+                album.isAllPhotos = allPhotos == assetCollection
                 if album.numberOfItems > 0 {
                     let r = PHAsset.fetchKeyAssets(in: assetCollection, options: nil)
                     if let first = r?.firstObject {

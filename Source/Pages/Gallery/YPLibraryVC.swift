@@ -9,6 +9,27 @@
 import UIKit
 import Photos
 
+protocol AssetProvider {
+    
+    // custom
+    var hasFetchResults: Bool { get }
+    var currentCollection: PHAssetCollection? { get }
+    var fetchCount: Int { get }
+    var currentFetchResult: PHFetchResult<PHAsset> { get }
+    
+    // existing
+    func initialize()
+    func updateCachedAssets(in collectionView: UICollectionView)
+    
+    // custom
+    func set(collection: PHAssetCollection?)
+    func set(libraryView: YPLibraryView)
+    func set(fetchResult: PHFetchResult<PHAsset>)
+    
+    func asset(at index: Int, inverseSorted: Bool) -> PHAsset
+    func collectionIsAllPhotos(_ collection: PHAssetCollection) -> Bool
+}
+
 public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     
     internal weak var delegate: YPLibraryViewDelegate?
@@ -18,9 +39,10 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     internal var initialized = false
     internal var selection = [YPLibrarySelection]()
     internal var currentlySelectedIndex: Int = 0
-    internal let mediaManager = LibraryMediaManager()
+    internal let mediaManager = LibraryMediaManager() as! AssetProvider
     internal var latestImageTapped = ""
     internal let panGestureHelper = PanGestureHelper()
+    internal var requiresInverseSorting = false
 
     // MARK: - Init
     
@@ -35,7 +57,8 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     
     func setAlbum(_ album: YPAlbum) {
         title = album.title
-        mediaManager.collection = album.collection
+        mediaManager.set(collection: album.collection)
+        requiresInverseSorting = album.isAllPhotos
         currentlySelectedIndex = 0
         if !multipleSelectionEnabled {
             selection.removeAll()
@@ -45,9 +68,9 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     
     func initialize() {
         mediaManager.initialize()
-        mediaManager.v = v
+        mediaManager.set(libraryView: v)
 
-        if mediaManager.fetchResult != nil {
+        if mediaManager.hasFetchResults {
             return
         }
         
@@ -146,7 +169,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
 
         if multipleSelectionEnabled {
             if selection.isEmpty {
-                let asset = mediaManager.fetchResult[currentlySelectedIndex]
+                let asset = mediaManager.asset(at: currentlySelectedIndex, inverseSorted: requiresInverseSorting)
                 selection = [
                     YPLibrarySelection(index: currentlySelectedIndex,
                                        cropRect: v.currentCropRect(),
@@ -225,21 +248,21 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
                     block(s == .authorized)
                 }
             }
+        default: break
         }
     }
     
     func refreshMediaRequest() {
         
-        let options = buildPHFetchOptions()
-        
-        if let collection = mediaManager.collection {
-            mediaManager.fetchResult = PHAsset.fetchAssets(in: collection, options: options)
+        if let collection = mediaManager.currentCollection {
+            requiresInverseSorting = mediaManager.collectionIsAllPhotos(collection)
+            mediaManager.set(fetchResult: PHAsset.fetchAssets(in: collection, options: buildPHFetchOptions()))
         } else {
-            mediaManager.fetchResult = PHAsset.fetchAssets(with: options)
+            mediaManager.set(fetchResult: PHAsset.fetchAssets(with: buildPHFetchOptions()))
         }
                 
-        if mediaManager.fetchResult.count > 0 {
-            changeAsset(mediaManager.fetchResult[0])
+        if mediaManager.fetchCount > 0 {
+            changeAsset(mediaManager.asset(at: 0, inverseSorted: requiresInverseSorting))
             v.collectionView.reloadData()
             v.collectionView.selectItem(at: IndexPath(row: 0, section: 0),
                                              animated: false,
@@ -259,7 +282,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             return userOpt
         }
         let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        options.sortDescriptors = requiresInverseSorting ? nil : [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.predicate = YPConfig.library.mediaType.predicate()
         return options
     }
@@ -293,16 +316,15 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             switch asset.mediaType {
             case .image:
                 self.v.assetZoomableView.setImage(asset,
-                                                  mediaManager: self.mediaManager,
+                                                  mediaManager: self.mediaManager as! LibraryMediaManager,
                                                   storedCropPosition: self.fetchStoredCrop(),
                                                   completion: completion)
             case .video:
                 self.v.assetZoomableView.setVideo(asset,
-                                                  mediaManager: self.mediaManager,
+                                                  mediaManager: self.mediaManager as! LibraryMediaManager,
                                                   storedCropPosition: self.fetchStoredCrop(),
                                                   completion: completion)
-            case .audio, .unknown:
-                ()
+            default: ()
             }
         }
     }
@@ -374,7 +396,10 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         delegate?.libraryViewStartedLoading()
         let cropRect = withCropRect ?? DispatchQueue.main.sync { v.currentCropRect() }
         let ts = targetSize(for: asset, cropRect: cropRect)
-        mediaManager.imageManager?.fetchImage(for: asset, cropRect: cropRect, targetSize: ts, callback: callback)
+        (mediaManager as! LibraryMediaManager).imageManager?.fetchImage(for: asset,
+                                                                        cropRect: cropRect,
+                                                                        targetSize: ts,
+                                                                        callback: callback)
     }
     
     private func checkVideoLengthAndCrop(for asset: PHAsset,
@@ -390,7 +415,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
                                         y: yCrop,
                                         width: ts.width,
                                         height: ts.height)
-            mediaManager.fetchVideoUrlAndCrop(for: asset, cropRect: resultCropRect, callback: callback)
+            (mediaManager as! LibraryMediaManager).fetchVideoUrlAndCrop(for: asset, cropRect: resultCropRect, callback: callback)
         }
     }
     
@@ -467,8 +492,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
                             photoCallback(photo)
                         }
                     }
-                case .audio, .unknown:
-                    return
+                default: return
                 }
             }
         }

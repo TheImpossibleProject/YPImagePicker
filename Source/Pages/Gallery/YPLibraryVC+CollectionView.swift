@@ -42,7 +42,8 @@ extension YPLibraryVC {
         multipleSelectionButtonTapped()
         
         // Update preview.
-        changeAsset(mediaManager.fetchResult[indexPath.row])
+        
+        changeAsset(mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting))
         
         // Bring preview down and keep selected cell visible.
         panGestureHelper.resetToOriginalState()
@@ -56,12 +57,12 @@ extension YPLibraryVC {
     
     /// Removes cell from selection
     func deselect(indexPath: IndexPath) {
-        if let positionIndex = selection.firstIndex(where: { $0.assetIdentifier == mediaManager.fetchResult[indexPath.row].localIdentifier }) {
+        if let positionIndex = selection.firstIndex(where: { $0.assetIdentifier == mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting).localIdentifier }) {
             selection.remove(at: positionIndex)
 
             // Refresh the numbers
             var selectedIndexPaths = [IndexPath]()
-            mediaManager.fetchResult.enumerateObjects { [unowned self] (asset, index, _) in
+            mediaManager.currentFetchResult.enumerateObjects { [unowned self] (asset, index, _) in
                 if self.selection.contains(where: { $0.assetIdentifier == asset.localIdentifier }) {
                     selectedIndexPaths.append(IndexPath(row: index, section: 0))
                 }
@@ -73,7 +74,7 @@ extension YPLibraryVC {
                 v.collectionView.deselectItem(at: indexPath, animated: false)
                 v.collectionView.selectItem(at: previouslySelectedIndexPath, animated: false, scrollPosition: [])
                 currentlySelectedIndex = previouslySelectedIndexPath.row
-                changeAsset(mediaManager.fetchResult[previouslySelectedIndexPath.row])
+                changeAsset(mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting))
             }
 			
             checkLimit()
@@ -82,7 +83,7 @@ extension YPLibraryVC {
     
     /// Adds cell to selection
     func addToSelection(indexPath: IndexPath) {
-        let asset = mediaManager.fetchResult[indexPath.item]
+        let asset = mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting)
         selection.append(
             YPLibrarySelection(
                 index: indexPath.row,
@@ -93,7 +94,7 @@ extension YPLibraryVC {
     }
     
     func isInSelectionPool(indexPath: IndexPath) -> Bool {
-        return selection.contains(where: { $0.assetIdentifier == mediaManager.fetchResult[indexPath.row].localIdentifier })
+        return selection.contains(where: { $0.assetIdentifier == mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting).localIdentifier })
     }
     
     /// Checks if there can be selected more items. If no - present warning.
@@ -104,7 +105,7 @@ extension YPLibraryVC {
 
 extension YPLibraryVC: UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return mediaManager.fetchResult.count
+        return mediaManager.fetchCount
     }
 }
 
@@ -112,7 +113,7 @@ extension YPLibraryVC: UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView,
                                cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let asset = mediaManager.fetchResult[indexPath.item]
+        let asset = mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting)
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "YPLibraryViewCell",
                                                             for: indexPath) as? YPLibraryViewCell else {
                                                                 fatalError("unexpected cell in collection view")
@@ -120,15 +121,15 @@ extension YPLibraryVC: UICollectionViewDelegate {
         cell.representedAssetIdentifier = asset.localIdentifier
         cell.multipleSelectionIndicator.selectionColor = YPConfig.colors.multipleItemsSelectedCircleColor
                                                             ?? YPConfig.colors.tintColor
-        mediaManager.imageManager?.requestImage(for: asset,
-                                   targetSize: v.cellSize(),
-                                   contentMode: .aspectFill,
-                                   options: nil) { image, _ in
-                                    // The cell may have been recycled when the time this gets called
-                                    // set image only if it's still showing the same asset.
-                                    if cell.representedAssetIdentifier == asset.localIdentifier && image != nil {
-                                        cell.imageView.image = image
-                                    }
+        (mediaManager as! LibraryMediaManager).imageManager?.requestImage(for: asset,
+                                                                          targetSize: v.cellSize(),
+                                                                          contentMode: .aspectFill,
+                                                                          options: nil) { image, _ in
+                                                                            // The cell may have been recycled when the time this gets called
+                                                                            // set image only if it's still showing the same asset
+                                                                            if cell.representedAssetIdentifier == asset.localIdentifier && image != nil {
+                                                                                cell.imageView.image = image
+                                                                            }
         }
         
         let isVideo = (asset.mediaType == .video)
@@ -155,7 +156,7 @@ extension YPLibraryVC: UICollectionViewDelegate {
         let previouslySelectedIndexPath = IndexPath(row: currentlySelectedIndex, section: 0)
         currentlySelectedIndex = indexPath.row
 
-        changeAsset(mediaManager.fetchResult[indexPath.row])
+        changeAsset(mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting))
         panGestureHelper.resetToOriginalState()
         
         // Only scroll cell to top if preview is hidden.

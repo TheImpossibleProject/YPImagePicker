@@ -22,6 +22,8 @@ class LibraryMediaManager {
     func initialize() {
         imageManager = PHCachingImageManager()
         resetCachedAssets()
+        
+        collection = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil).firstObject
     }
     
     func resetCachedAssets() {
@@ -173,5 +175,39 @@ class LibraryMediaManager {
             s.cancelExport()
         }
     }
+    
+    func inverseAsset(at index: Int) -> PHAsset {
+        var inverseIndex = index
+        guard let last = fetchResult.lastObject else { return fetchResult[inverseIndex] }
+        inverseIndex = fetchResult.index(of: last) - index
+        return fetchResult[inverseIndex]
+    }
 }
 
+extension LibraryMediaManager: AssetProvider {
+    var hasFetchResults: Bool { return self.fetchResult != nil }
+    
+    var currentCollection: PHAssetCollection? { return self.collection }
+    
+    var fetchCount: Int { return self.fetchResult.count }
+    
+    var currentFetchResult: PHFetchResult<PHAsset> { return self.fetchResult }
+    
+    func set(collection: PHAssetCollection?) { self.collection = collection }
+    
+    func set(libraryView: YPLibraryView) { self.v = libraryView }
+    
+    func set(fetchResult: PHFetchResult<PHAsset>) { self.fetchResult = fetchResult }
+    
+    func asset(at index: Int, inverseSorted: Bool) -> PHAsset {
+        if inverseSorted {
+            return inverseAsset(at: index)
+        } else {
+            return fetchResult[index]
+        }
+    }
+    
+    func collectionIsAllPhotos(_ collection: PHAssetCollection) -> Bool {
+        return PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil).firstObject == collection
+    }
+}
