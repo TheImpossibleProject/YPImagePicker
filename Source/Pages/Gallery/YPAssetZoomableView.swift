@@ -40,6 +40,7 @@ final class YPAssetZoomableView: UIScrollView {
         squaredZoomScale = calculateSquaredZoomScale()
         if fit {
             setZoomScale(squaredZoomScale, animated: isAnimated)
+            myDelegate?.ypAssetZoomableViewScrollViewDidEndZooming()
         } else {
             setZoomScale(1, animated: isAnimated)
         }
