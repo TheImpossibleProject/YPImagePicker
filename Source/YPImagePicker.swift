@@ -10,6 +10,11 @@ import UIKit
 import AVFoundation
 import Photos
 
+public protocol YPCutomImagePickerRoot: class {
+    var finishHandler: () -> () { get set }
+    var cancelHandler: () -> () { get set }
+}
+
 public protocol YPImagePickerDelegate: AnyObject {
     func noPhotos()
 }
@@ -36,6 +41,10 @@ open class YPImagePicker: UINavigationController {
     let loadingView = YPLoadingView()
     private let picker: YPPickerVC!
     
+    /// A view controller that is used as a root view controller in the image picker navigation flow.
+    /// This view controller will be shown before the "main" image picker.
+    public var customRootViewController: (UIViewController & YPCutomImagePickerRoot)?
+    
     /// Get a YPImagePicker instance with the default configuration.
     public convenience init() {
         self.init(configuration: YPImagePickerConfiguration.shared)
@@ -53,12 +62,28 @@ open class YPImagePicker: UINavigationController {
         fatalError("init(coder:) has not been implemented")
     }
     
-override open func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
+        
         picker.didClose = { [weak self] in
             self?._didFinishPicking?([], true)
         }
-        viewControllers = [picker]
+        
+        if let customRoot = customRootViewController {
+            customRoot.finishHandler = { [weak self] in
+                guard let self = self else { return }
+                self.pushViewController(self.picker, animated: true)
+            }
+            customRoot.cancelHandler = { [weak self] in
+                self?.picker.didClose?()
+            }
+            picker.shouldShowCancelButton = false
+            viewControllers = [customRoot]
+        }
+        else {
+            viewControllers = [picker]
+        }
+        
         setupLoadingView()
         navigationBar.isTranslucent = false
 

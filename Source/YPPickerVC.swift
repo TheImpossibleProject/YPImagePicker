@@ -18,6 +18,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     let albumsManager = YPAlbumsManager()
     var shouldHideStatusBar = false
+    var shouldShowCancelButton = true
     var initialStatusBarHidden = false
     weak var imagePickerDelegate: ImagePickerDelegate?
     
@@ -264,10 +265,12 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     
     func updateUI() {
         // Update Nav Bar state.
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.cancel,
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(close))
+        if shouldShowCancelButton {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: YPConfig.wordings.cancel,
+                                                               style: .plain,
+                                                               target: self,
+                                                               action: #selector(close))
+        }
         
         switch mode {
         case .library:
