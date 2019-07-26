@@ -132,6 +132,8 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         if YPConfig.library.minNumberOfItems > 1 {
             multipleSelectionButtonTapped()
         }
+        
+        NotificationCenter.default.post(name: Notification.Name.YPImagePickerAssetViewDidAppear, object: v.assetViewContainer)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

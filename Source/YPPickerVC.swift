@@ -10,6 +10,10 @@ import Foundation
 import Stevia
 import Photos
 
+public extension Notification.Name {
+    static let YPImagePickerAssetViewDidAppear = Notification.Name("YPImagePickerAssetViewDidAppear")
+}
+
 protocol ImagePickerDelegate: AnyObject {
     func noPhotos()
 }
@@ -22,7 +26,8 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     var initialStatusBarHidden = false
     weak var imagePickerDelegate: ImagePickerDelegate?
     
-    override open    var prefersStatusBarHidden: Bool {
+    
+    override open var prefersStatusBarHidden: Bool {
         return (shouldHideStatusBar || initialStatusBarHidden) && YPConfig.hidesStatusBar
     }
     
