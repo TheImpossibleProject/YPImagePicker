@@ -22,7 +22,7 @@ final class YPAssetZoomableView: UIScrollView {
     public var isVideoMode = false
     public var photoImageView = UIImageView()
     public var videoView = YPVideoView()
-    public var squaredZoomScale: CGFloat = 1
+    public var squaredZoomScale: CGFloat = YPImagePickerConfiguration.shared.customAspectRatio
     public var minWidth: CGFloat? = YPConfig.library.minWidthForItem
     
     fileprivate var currentAsset: PHAsset?
@@ -38,12 +38,9 @@ final class YPAssetZoomableView: UIScrollView {
     ///   - fit: If true - zoom to show squared. If false - show full.
     public func fitImage(_ fit: Bool, animated isAnimated: Bool = false) {
         squaredZoomScale = calculateSquaredZoomScale()
-        if fit {
-            setZoomScale(squaredZoomScale, animated: isAnimated)
-            myDelegate?.ypAssetZoomableViewScrollViewDidEndZooming()
-        } else {
-            setZoomScale(1, animated: isAnimated)
-        }
+
+        let scale = fit ? squaredZoomScale : 1
+        setZoomScale(scale, animated: isAnimated)
     }
     
     /// Re-apply correct scrollview settings if image has already been adjusted in
@@ -173,17 +170,15 @@ final class YPAssetZoomableView: UIScrollView {
             print("YPAssetZoomableView >>> No image"); return 1.0
         }
         
-        var squareZoomScale: CGFloat = 1.0
         let w = image.size.width
         let h = image.size.height
+
         
-        if w > h { // Landscape
-            squareZoomScale = (w / h)
-        } else if h > w { // Portrait
-            squareZoomScale = (h / w)
+        if w > h {
+            return (w / h) * YPImagePickerConfiguration.shared.customInvertedAspectRatio
+        } else {
+            return h / w
         }
-        
-        return squareZoomScale
     }
     
     // Centring the image frame
