@@ -22,7 +22,7 @@ final class YPAssetZoomableView: UIScrollView {
     public var isVideoMode = false
     public var photoImageView = UIImageView()
     public var videoView = YPVideoView()
-    public var squaredZoomScale: CGFloat = YPImagePickerConfiguration.shared.customAspectRatio
+    public var squaredZoomScale: CGFloat = 1
     public var minWidth: CGFloat? = YPConfig.library.minWidthForItem
     
     fileprivate var currentAsset: PHAsset?
@@ -39,7 +39,12 @@ final class YPAssetZoomableView: UIScrollView {
     public func fitImage(_ fit: Bool, animated isAnimated: Bool = false) {
         squaredZoomScale = calculateSquaredZoomScale()
 
-        let scale = fit ? squaredZoomScale : 1
+        var isLandscape = false
+        if let image = photoImageView.image {
+            isLandscape = image.size.width > image.size.height
+        }
+        
+        let scale = fit ? squaredZoomScale : (isLandscape ? 1 : YPImagePickerConfiguration.shared.customAspectRatio)
         setZoomScale(scale, animated: isAnimated)
     }
     
@@ -172,12 +177,12 @@ final class YPAssetZoomableView: UIScrollView {
         
         let w = image.size.width
         let h = image.size.height
-
+        
         
         if w > h {
-            return (w / h) * YPImagePickerConfiguration.shared.customInvertedAspectRatio
+            return (w / h) * YPImagePickerConfiguration.shared.customAspectRatio
         } else {
-            return h / w
+            return (h / w) * YPImagePickerConfiguration.shared.customAspectRatio
         }
     }
     
