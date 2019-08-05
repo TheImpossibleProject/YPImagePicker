@@ -73,6 +73,11 @@ public class YPVideoView: UIView {
     }
     
     @objc public func playerItemDidReachEnd(_ note: Notification) {
+        guard let item = note.object as? AVPlayerItem,
+            item == player.currentItem else { return }
+        
+        print(item)
+        
         player.actionAtItemEnd = .none
         player.seek(to: CMTime.zero)
         player.play()
