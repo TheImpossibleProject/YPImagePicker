@@ -46,6 +46,7 @@ final class YPAssetZoomableView: UIScrollView {
         
         let scale = fit ? squaredZoomScale : (isLandscape ? 1 : YPImagePickerConfiguration.shared.customAspectRatio)
         setZoomScale(scale, animated: isAnimated)
+        myDelegate?.ypAssetZoomableViewScrollViewDidEndZooming()
     }
     
     /// Re-apply correct scrollview settings if image has already been adjusted in
