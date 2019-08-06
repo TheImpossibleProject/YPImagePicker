@@ -30,7 +30,8 @@ extension YPPermissionCheckable where Self: UIViewController {
     // Async beacause will prompt permission if .notDetermined
     // and ask custom popup if denied.
     func checkPermissionToAccessVideo(block: @escaping (Bool) -> Void) {
-        switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
+        let status = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
+        switch status {
         case .authorized:
             block(true)
         case .restricted, .denied:
@@ -45,6 +46,7 @@ extension YPPermissionCheckable where Self: UIViewController {
                     block(granted)
                 }
             })
+        default: print("case \(status) not handled)")
         }
     }
 }

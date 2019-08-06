@@ -118,6 +118,7 @@ extension YPCropVC: UIGestureRecognizerDelegate {
             pinchGestureEnded()
         case .cancelled, .failed, .possible:
             ()
+        default: print("case \(sender.state) not covered")
         }
         // Reset the pinch scale.
         sender.scale = 1.0

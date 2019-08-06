@@ -225,6 +225,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
             case .off: return .off
             case .on: return .on
             case .auto: return .auto
+            default: fatalError("case \(videoHelper.currentTorchMode()) not covered")
             }
         } else {
             return .noFlash

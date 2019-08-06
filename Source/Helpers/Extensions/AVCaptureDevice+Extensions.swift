@@ -20,6 +20,7 @@ extension AVCaptureDevice {
                 torchMode = .off
             case .off:
                 torchMode = .auto
+            default: print("csae \(torchMode) not covered")
             }
             unlockForConfiguration()
         } catch _ { }

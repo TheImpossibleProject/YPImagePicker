@@ -62,6 +62,7 @@ class YPVideoCaptureHelper: NSObject {
                     self?.session.startRunning()
                     completion()
                     self?.tryToSetupPreview()
+                default: print("case \(status) not covered")
                 }
             }
         }

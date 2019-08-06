@@ -64,6 +64,7 @@ extension YPPhotoCapture {
                     self?.session.startRunning()
                     completion()
                     self?.tryToSetupPreview()
+                default: print("case \(status) not covered")
                 }
             }
         }

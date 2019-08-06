@@ -49,6 +49,7 @@ class PreiOS10PhotoCapture: YPPhotoCapture {
             case .off:
                 currentFlashMode = .auto
                 device.flashMode = .auto
+            default: print("case \(device.flashMode) not handled")
             }
             device.unlockForConfiguration()
         } catch _ { }

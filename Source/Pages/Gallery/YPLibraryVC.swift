@@ -39,7 +39,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     internal var initialized = false
     internal var selection = [YPLibrarySelection]()
     internal var currentlySelectedIndex: Int = 0
-    internal let mediaManager = LibraryMediaManager() as! AssetProvider
+    internal let mediaManager = LibraryMediaManager() as AssetProvider
     internal var latestImageTapped = ""
     internal let panGestureHelper = PanGestureHelper()
     internal var requiresInverseSorting = false
