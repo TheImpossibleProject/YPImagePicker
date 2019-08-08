@@ -138,15 +138,33 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
                 guard let strongSelf = self else { return }
                 
                 DispatchQueue.main.async {
+                    
+                    strongSelf.setupRightBarButtonItem()
+                    
+                    if strongSelf.isFileExceedsLimit(url: destinationURL) {
+                        strongSelf.presentAlert(title: YPConfig.wordings.fileSizeLimitExceeded.title,
+                                                message: YPConfig.wordings.fileSizeLimitExceeded.message)
+                        return
+                    }
+                    
                     let resultVideo = YPMediaVideo(thumbnail: strongSelf.coverImageView.image!,
                                                    videoURL: destinationURL, asset: strongSelf.inputVideo.asset)
                     didSave(YPMediaItem.video(v: resultVideo))
-                    strongSelf.setupRightBarButtonItem()
                 }
             }
         } catch let error {
             print("💩 \(error)")
         }
+    }
+    
+    func isFileExceedsLimit(url: URL) -> Bool {
+        if
+            let fileAttributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+            let fileSize = fileAttributes[FileAttributeKey.size] as? Double,
+            fileSize > YPConfig.video.trimmerFileSizeLimitInBytes {
+            return true
+        }
+        return false
     }
     
     @objc func cancel() {
@@ -276,3 +294,22 @@ extension YPVideoFiltersVC: ThumbSelectorViewDelegate {
         }
     }
 }
+
+extension UIViewController {
+    struct AlertAction {
+        static let ok = UIAlertAction(title: NSLocalizedString("OK", comment: ""),
+                                      style: .default,
+                                      handler: { action in })
+    }
+    
+    func presentAlert(title: String? = nil,
+                      message: String? = nil,
+                      preferredStyle: UIAlertController.Style = UIAlertController.Style.alert,
+                      actions: [UIAlertAction] = [AlertAction.ok]) {
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: preferredStyle)
+        actions.forEach { alert.addAction($0) }
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
