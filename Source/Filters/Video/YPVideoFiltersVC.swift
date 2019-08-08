@@ -20,8 +20,6 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     
     @IBOutlet weak var coverImageView: UIImageView!
     @IBOutlet weak var coverThumbSelectorView: ThumbSelectorView!
-    
-    @IBOutlet weak var durationLabel: UILabel!
 
     public var inputVideo: YPMediaVideo!
     public var inputAsset: AVAsset { return AVAsset(url: inputVideo.url) }
@@ -61,9 +59,6 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
 
         trimBottomItem.button.addTarget(self, action: #selector(selectTrim), for: .touchUpInside)
         coverBottomItem.button.addTarget(self, action: #selector(selectCover), for: .touchUpInside)
-        
-        let assetDuration = Double(inputAsset.duration.value) / Double(inputAsset.duration.timescale)
-        durationLabel.text = assetDuration > YPConfig.video.trimmerMaxDuration ? "\(YPConfig.video.trimmerMaxDuration)" : "\(ceil(assetDuration))s"
         
         // Remove the default and add a notification to repeat playback from the start
         videoView.removeReachEndObserver()
@@ -242,14 +237,6 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     }
 }
 
-extension YPVideoFiltersVC {
-    func setDurationLabelTime() {
-        guard let start = trimmerView.startTime, let end = trimmerView.endTime else { return }
-        let total = end - start
-        durationLabel.text = String(format: "%.1fs", Double(total.value) / Double(total.timescale))
-    }
-}
-
 // MARK: - TrimmerViewDelegate
 extension YPVideoFiltersVC: TrimmerViewDelegate {
     public func positionBarStoppedMoving(_ playerTime: CMTime) {
@@ -263,7 +250,6 @@ extension YPVideoFiltersVC: TrimmerViewDelegate {
         stopPlaybackTimeChecker()
         videoView.pause()
         videoView.player.seek(to: playerTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
-        setDurationLabelTime()
     }
 }
 
