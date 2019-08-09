@@ -42,6 +42,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     override public func viewDidLoad() {
         super.viewDidLoad()
         v.timeElapsedLabel.isHidden = false // Show the time elapsed label since we're in the video screen.
+        v.progressBar.isHidden = true
         setupButtons()
         linkButtons()
         
@@ -56,6 +57,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
             guard let strongSelf = self else {
                 return
             }
+            self?.v.progressBar.isHidden = false
             self?.videoHelper.start(previewView: strongSelf.v.previewViewContainer,
                                     withVideoRecordingLimit: YPConfig.video.recordingTimeLimit,
                                     completion: {
@@ -80,7 +82,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     private func setupButtons() {
         v.flashButton.setImage(YPConfig.icons.flashOffIcon, for: .normal)
         v.flipButton.setImage(YPConfig.icons.loopIcon, for: .normal)
-        v.shotButton.setImage(YPConfig.icons.captureVideoImage, for: .normal)
+        v.shotButton.setImage(YPConfig.icons.videoShutterImage, for: .normal)
     }
     
     private func linkButtons() {
@@ -200,11 +202,15 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         v.flashButton.setImage(flashImage(for: state.flashMode), for: .normal)
         v.flashButton.isEnabled = !state.isRecording
         v.flashButton.isHidden = state.flashMode == .noFlash
-        v.shotButton.setImage(state.isRecording ? YPConfig.icons.captureVideoOnImage : YPConfig.icons.captureVideoImage,
+        v.progressBar.isHidden = state.isRecording ? false : true
+        
+        let shutterImage = YPConfig.icons.videoShutterImage ?? YPConfig.icons.captureVideoImage
+        let shutterRecording = YPConfig.icons.videoShutterImageRecording ?? YPConfig.icons.captureVideoImage
+        v.shotButton.setImage(state.isRecording ? shutterRecording : shutterImage,
                               for: .normal)
         v.flipButton.isEnabled = !state.isRecording
-        v.progressBar.progress = state.progress
         v.timeElapsedLabel.text = YPHelper.formattedStrigFrom(state.timeElapsed)
+        v.progressBar.progress = state.progress
         
         // Animate progress bar changes.
         UIView.animate(withDuration: 1, animations: v.progressBar.layoutIfNeeded)
