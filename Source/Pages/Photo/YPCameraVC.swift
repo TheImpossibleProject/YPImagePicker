@@ -19,6 +19,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
 
     public required init() {
         self.v = YPCameraView(overlayView: YPConfig.overlayView)
+        v.progressBar.isHidden = true
         super.init(nibName: nil, bundle: nil)
         title = YPConfig.wordings.cameraTitle
     }
