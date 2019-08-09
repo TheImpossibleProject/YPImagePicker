@@ -30,6 +30,7 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
         self.automaticallyAdjustsScrollViewInsets = false
         v.scrollView.delegate = self
         view = v
+        v.backgroundColor = .clear
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -68,7 +69,12 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
         // Build headers
         for (index, c) in controllers.enumerated() {
             let menuItem = YPMenuItem()
-            menuItem.textLabel.text = c.title?.capitalized
+            if let image = buttonImage(for: index)?.withRenderingMode(.alwaysTemplate) {
+                menuItem.textLabel.text = nil
+                menuItem.button.setImage(image, for: .normal)
+            } else {
+                menuItem.textLabel.text = c.title?.capitalized
+            }
             menuItem.button.tag = index
             menuItem.button.addTarget(self,
                                       action: #selector(tabTapped(_:)),
@@ -79,6 +85,15 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
         let currentMenuItem = v.header.menuItems[0]
         currentMenuItem.select()
         v.header.refreshMenuItems()
+    }
+    
+    private func buttonImage(for index: Int) -> UIImage? {
+        switch index {
+        case 0: return YPConfig.icons.cameraRollImage
+        case 1: return YPConfig.icons.cameraImage
+        case 2: return YPConfig.icons.videoImage
+        default: fatalError("YPBottomPager: no image for index: \(index)")
+        }
     }
     
     @objc

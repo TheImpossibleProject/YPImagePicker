@@ -12,7 +12,7 @@ import Stevia
 final class YPMenuItem: UIView {
     
     var textLabel = UILabel()
-    var button = UIButton()
+    var button = UIButton(type: .system)
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -59,9 +59,11 @@ final class YPMenuItem: UIView {
     
     func select() {
         textLabel.textColor = selectedColor()
+        button.tintColor = selectedColor()
     }
     
     func deselect() {
         textLabel.textColor = unselectedColor()
+        button.tintColor = unselectedColor()
     }
 }
