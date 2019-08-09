@@ -24,6 +24,9 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     public var inputVideo: YPMediaVideo!
     public var inputAsset: AVAsset { return AVAsset(url: inputVideo.url) }
     
+    @IBOutlet weak var trimmedLabel: UILabel!
+    @IBOutlet weak var maxVideoLengthLabel: UILabel!
+    
     private var playbackTimeCheckerTimer: Timer?
     private var imageGenerator: AVAssetImageGenerator?
     private var isFromSelectionVC = false
@@ -85,6 +88,8 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     }
     
     override public func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         trimmerView.asset = inputAsset
         trimmerView.delegate = self
         
@@ -93,8 +98,10 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
         
         selectTrim()
         videoView.loadVideo(inputVideo)
-
-        super.viewDidAppear(animated)
+        
+        maxVideoLengthLabel.text = String(format: YPConfig.wordings.videoTrimmingScreen.maxVideoLenghtText,
+                                          YPConfig.video.trimmerMaxDuration)
+        updateTrimmedLabel()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -104,7 +111,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     }
     
     func setupRightBarButtonItem() {
-        let rightBarButtonTitle = isFromSelectionVC ? YPConfig.wordings.done : YPConfig.wordings.next
+        let rightBarButtonTitle = YPConfig.wordings.done
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: rightBarButtonTitle,
                                                             style: .done,
                                                             target: self,
@@ -237,6 +244,20 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     }
 }
 
+extension YPVideoFiltersVC {
+    
+    private func updateTrimmedLabel() {
+        guard let startTime = trimmerView.startTime, let endTime = trimmerView.endTime else {
+            trimmedLabel.text = nil
+            return
+        }
+        
+        let trimmedTime = endTime - startTime
+        trimmedLabel.text = String(format: YPConfig.wordings.videoTrimmingScreen.trimmedText,
+                                   Double(trimmedTime.value) / Double(trimmedTime.timescale))
+    }
+}
+
 // MARK: - TrimmerViewDelegate
 extension YPVideoFiltersVC: TrimmerViewDelegate {
     public func positionBarStoppedMoving(_ playerTime: CMTime) {
@@ -250,6 +271,7 @@ extension YPVideoFiltersVC: TrimmerViewDelegate {
         stopPlaybackTimeChecker()
         videoView.pause()
         videoView.player.seek(to: playerTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
+        updateTrimmedLabel()
     }
 }
 
