@@ -11,7 +11,7 @@ import AVFoundation
 import Photos
 
 public protocol YPCutomImagePickerRoot: class {
-    var finishHandler: () -> () { get set }
+    var presentImagePickerHandler: () -> () { get set }
     var cancelHandler: () -> () { get set }
 }
 
@@ -70,7 +70,7 @@ open class YPImagePicker: UINavigationController {
         }
         
         if let customRoot = customRootViewController {
-            customRoot.finishHandler = { [weak self] in
+            customRoot.presentImagePickerHandler = { [weak self] in
                 guard let self = self else { return }
                 self.pushViewController(self.picker, animated: true)
             }

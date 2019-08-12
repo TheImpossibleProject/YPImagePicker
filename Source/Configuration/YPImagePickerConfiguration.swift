@@ -218,6 +218,10 @@ public struct YPConfigVideo {
     /// The minimum duration allowed for the trimming.
     /// The handles won't pan further if the minimum duration is attained.
     public var trimmerMinDuration: Double = 3.0
+    
+    /// The maximum files size allowed for the triming.
+    /// The alert view with an error will be shown when file exceeds this limit.
+    public var trimmerFileSizeLimitInBytes: Double = 1024 * 1024 * 10 // 10 Mb
 }
 
 public enum YPlibraryMediaType {
