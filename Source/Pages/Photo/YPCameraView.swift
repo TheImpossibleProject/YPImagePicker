@@ -76,7 +76,7 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         timeElapsedLabel-(15+sideMargin)-|
         timeElapsedLabel.Top == previewViewContainer.Top + 15
         
-        shotButton.centerVertically()
+        shotButton.centerVertically(-22)
         shotButton.size(100).centerHorizontally()
 
         // Style
