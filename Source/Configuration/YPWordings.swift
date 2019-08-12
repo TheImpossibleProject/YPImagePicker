@@ -12,6 +12,7 @@ public struct YPWordings {
     
     public var permissionPopup = PermissionPopup()
     public var videoDurationPopup = VideoDurationPopup()
+    public var videoTrimmingScreen = VideoTrimmerScreen()
     public let fileSizeLimitExceeded = VideoTrimmerFileSizeLimitExceededError()
 
     public struct PermissionPopup {
@@ -27,6 +28,11 @@ public struct YPWordings {
         public var tooLongMessage = ypLocalized("YPImagePickerVideoTooLong")
     }
     
+    public struct VideoTrimmerScreen {
+        public var trimmedText = ""
+        public var maxVideoLenghtText = ""
+    }
+
     public struct VideoTrimmerFileSizeLimitExceededError {
         public var title = ypLocalized("YPImagePickerVideoTrimmerFileSizeLimitExceededError.title")
         public var message = ypLocalized("YPImagePickerVideoTrimmerFileSizeLimitExceededError.message")

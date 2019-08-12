@@ -26,4 +26,11 @@ public struct YPIcons {
     public var captureVideoImage: UIImage = imageFromBundle("yp_iconVideoCapture")
     public var captureVideoOnImage: UIImage = imageFromBundle("yp_iconVideoCaptureRecording")
     public var playImage: UIImage = imageFromBundle("yp_play")
+    public var cameraRollImage: UIImage? = nil
+    
+    public var cameraImage: UIImage? = nil
+    public var videoImage: UIImage? = nil
+    public var cameraShutterImage: UIImage? = nil
+    public var videoShutterImage: UIImage? = nil
+    public var videoShutterImageRecording: UIImage? = nil
 }

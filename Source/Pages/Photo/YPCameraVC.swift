@@ -19,6 +19,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
 
     public required init() {
         self.v = YPCameraView(overlayView: YPConfig.overlayView)
+        v.progressBar.isHidden = true
         super.init(nibName: nil, bundle: nil)
         title = YPConfig.wordings.cameraTitle
     }
@@ -38,6 +39,9 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.focusTapped(_:)))
         tapRecognizer.delegate = self
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
+        
+        YPHelper.changeBackButtonIcon(self)
+        YPHelper.changeBackButtonTitle(self)
     }
     
     func start() {

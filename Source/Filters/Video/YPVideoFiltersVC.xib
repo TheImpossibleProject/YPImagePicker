@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14854.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14806.4"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="RealHeadOffc-Medium.ttf">
+            <string>RealHeadOffc-Medium</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YPVideoFiltersVC" customModule="YPImagePicker" customModuleProvider="target">
             <connections>
                 <outlet property="coverBottomItem" destination="qy9-MY-67C" id="LaY-F2-uVO"/>
                 <outlet property="coverImageView" destination="daH-No-sZc" id="sNy-7V-7gV"/>
                 <outlet property="coverThumbSelectorView" destination="Tqq-Gf-aeR" id="CZG-rg-NWB"/>
+                <outlet property="maxVideoLengthLabel" destination="TiN-Nv-BdF" id="M3J-G7-fxq"/>
                 <outlet property="trimBottomItem" destination="uB8-a7-Vh0" id="7Rn-9o-WWN"/>
+                <outlet property="trimmedLabel" destination="y9b-Em-3Mc" id="HW6-8h-zZc"/>
                 <outlet property="trimmerView" destination="W4N-1E-jNP" id="a4g-Mg-65j"/>
                 <outlet property="videoView" destination="AFl-Bk-oPH" id="x8U-ib-yqT"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -38,33 +43,49 @@
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AFl-Bk-oPH" customClass="YPVideoView" customModule="YPImagePicker" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="20" width="375" height="375"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="AFl-Bk-oPH" secondAttribute="height" multiplier="1:1" id="tL6-cM-ei5"/>
                     </constraints>
                 </view>
                 <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="daH-No-sZc">
-                    <rect key="frame" x="0.0" y="20" width="375" height="375"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dMy-Fy-gyR">
-                    <rect key="frame" x="0.0" y="395" width="375" height="232"/>
+                    <rect key="frame" x="0.0" y="375" width="375" height="252"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W4N-1E-jNP" customClass="TrimmerView" customModule="PryntTrimmerView">
-                            <rect key="frame" x="10" y="10" width="355" height="77.5"/>
+                            <rect key="frame" x="20" y="20" width="335" height="84"/>
                         </view>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tqq-Gf-aeR" customClass="ThumbSelectorView" customModule="PryntTrimmerView">
-                            <rect key="frame" x="10" y="10" width="355" height="77.5"/>
+                            <rect key="frame" x="20" y="20" width="335" height="84"/>
                         </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Trimmed: 10.0 s" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y9b-Em-3Mc">
+                            <rect key="frame" x="10" y="112" width="81" height="16"/>
+                            <fontDescription key="fontDescription" name="RealHeadOffc-Medium" family="Real Head Offc" pointSize="11"/>
+                            <color key="textColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max. 10.0 s" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TiN-Nv-BdF">
+                            <rect key="frame" x="302" y="112" width="63" height="17"/>
+                            <fontDescription key="fontDescription" name="RealHeadOffc-Medium" family="Real Head Offc" pointSize="12"/>
+                            <color key="textColor" red="0.050980392156862744" green="0.050980392156862744" blue="0.050980392156862744" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="TiN-Nv-BdF" firstAttribute="top" secondItem="W4N-1E-jNP" secondAttribute="bottom" constant="8" id="254-Tw-nsS"/>
+                        <constraint firstItem="y9b-Em-3Mc" firstAttribute="top" secondItem="W4N-1E-jNP" secondAttribute="bottom" constant="8" id="7dm-Cn-UEk"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="leading" secondItem="W4N-1E-jNP" secondAttribute="leading" id="GFg-oD-rpc"/>
-                        <constraint firstItem="W4N-1E-jNP" firstAttribute="leading" secondItem="dMy-Fy-gyR" secondAttribute="leading" constant="10" id="IGg-wF-gcV"/>
+                        <constraint firstItem="W4N-1E-jNP" firstAttribute="leading" secondItem="dMy-Fy-gyR" secondAttribute="leading" constant="20" id="IGg-wF-gcV"/>
                         <constraint firstItem="W4N-1E-jNP" firstAttribute="height" secondItem="dMy-Fy-gyR" secondAttribute="height" multiplier="1:3" id="O8d-8f-QKt"/>
+                        <constraint firstItem="y9b-Em-3Mc" firstAttribute="leading" secondItem="dMy-Fy-gyR" secondAttribute="leading" constant="10" id="OjY-6Q-Bew"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="top" secondItem="W4N-1E-jNP" secondAttribute="top" id="T6m-tY-U37"/>
-                        <constraint firstItem="W4N-1E-jNP" firstAttribute="top" secondItem="dMy-Fy-gyR" secondAttribute="top" constant="10" id="XKg-VC-ijz"/>
+                        <constraint firstItem="W4N-1E-jNP" firstAttribute="top" secondItem="dMy-Fy-gyR" secondAttribute="top" constant="20" id="XKg-VC-ijz"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="trailing" secondItem="W4N-1E-jNP" secondAttribute="trailing" id="bpp-dw-jOk"/>
-                        <constraint firstAttribute="trailing" secondItem="W4N-1E-jNP" secondAttribute="trailing" constant="10" id="nMz-fm-d4C"/>
+                        <constraint firstAttribute="trailing" secondItem="TiN-Nv-BdF" secondAttribute="trailing" constant="10" id="mne-Ad-i66"/>
+                        <constraint firstAttribute="trailing" secondItem="W4N-1E-jNP" secondAttribute="trailing" constant="20" id="nMz-fm-d4C"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="bottom" secondItem="W4N-1E-jNP" secondAttribute="bottom" id="vGS-BO-IUw"/>
                     </constraints>
                 </view>

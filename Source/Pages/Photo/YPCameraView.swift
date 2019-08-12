@@ -62,6 +62,7 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
             |buttonsContainer|,
             0
         )
+        progressBar.height(8)
         previewViewContainer.heightEqualsWidth()
 
         overlayView?.followEdges(previewViewContainer)
@@ -75,8 +76,8 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         timeElapsedLabel-(15+sideMargin)-|
         timeElapsedLabel.Top == previewViewContainer.Top + 15
         
-        shotButton.centerVertically()
-        shotButton.size(84).centerHorizontally()
+        shotButton.centerVertically(-22)
+        shotButton.size(100).centerHorizontally()
 
         // Style
         backgroundColor = YPConfig.colors.photoVideoScreenBackground
@@ -88,11 +89,18 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
             l.font = .monospacedDigitSystemFont(ofSize: 13, weight: UIFont.Weight.medium)
         }
         progressBar.style { p in
-            p.trackTintColor = .clear
+            p.trackTintColor = .lightGray
             p.tintColor = .red
         }
+        
         flashButton.setImage(YPConfig.icons.flashOffIcon, for: .normal)
         flipButton.setImage(YPConfig.icons.loopIcon, for: .normal)
-        shotButton.setImage(YPConfig.icons.capturePhotoImage, for: .normal)
+        
+        if let image = YPConfig.icons.cameraShutterImage?.withRenderingMode(.alwaysTemplate) {
+            shotButton.setImage(image, for: .normal)
+            shotButton.tintColor = .orange
+        } else {
+            shotButton.setImage(YPConfig.icons.capturePhotoImage, for: .normal)
+        }
     }
 }

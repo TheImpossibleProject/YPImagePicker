@@ -16,7 +16,7 @@ final class YPPagerMenu: UIView {
     
     convenience init() {
         self.init(frame: .zero)
-        backgroundColor = UIColor(r: 247, g: 247, b: 247)
+        backgroundColor = .clear
         clipsToBounds = true
     }
     
@@ -38,7 +38,26 @@ final class YPPagerMenu: UIView {
                 |m
             }
             
+            layout(0,
+                   m
+            )
+            
             previousMenuItem = m
+            m.height(44)
+        }
+        
+        if #available(iOS 10, *) {
+            let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
+            blurView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(blurView)
+            sendSubviewToBack(blurView)
+            NSLayoutConstraint.activate([
+                blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                blurView.topAnchor.constraint(equalTo: topAnchor),
+                blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
+                blurView.bottomAnchor.constraint(equalTo: bottomAnchor)
+                ]
+            )
         }
     }
     

@@ -16,25 +16,27 @@ final class YPBottomPagerView: UIView {
     
     convenience init() {
         self.init(frame: .zero)
-        backgroundColor = UIColor(red: 239/255, green: 238/255, blue: 237/255, alpha: 1)
+        backgroundColor = .clear
         
         sv(
             scrollView,
             header
         )
         
-        layout(
-            0,
-            |scrollView|,
-            0,
-            |header| ~ 44
-        )
-        
-        if #available(iOS 11.0, *) {
-            header.Bottom == safeAreaLayoutGuide.Bottom
-        } else {
-            header.bottom(0)
+        if #available(iOS 11, *) {
+            NSLayoutConstraint.activate([
+                header.topAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -44)
+            ])
         }
+        
+        scrollView.fillContainer()
+        
+        NSLayoutConstraint.activate([
+            header.leadingAnchor.constraint(equalTo: leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: trailingAnchor),
+            header.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        
         header.heightConstraint?.constant = YPConfig.hidesBottomBar ? 0 : 44
         
         clipsToBounds = false

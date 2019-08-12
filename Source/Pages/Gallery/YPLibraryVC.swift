@@ -107,6 +107,11 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
 
             strongSelf.updateCropInfo()
         }
+        v.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
+        v.collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
+        
+        YPHelper.changeBackButtonIcon(self)
+        YPHelper.changeBackButtonTitle(self)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
