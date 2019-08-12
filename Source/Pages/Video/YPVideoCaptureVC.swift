@@ -49,6 +49,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         // Focus
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(focusTapped(_:)))
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
+        
+        YPHelper.changeBackButtonIcon(self)
+        YPHelper.changeBackButtonTitle(self)
     }
 
     func start() {
@@ -213,7 +216,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         v.progressBar.progress = state.progress
         
         // Animate progress bar changes.
-        UIView.animate(withDuration: 1, animations: v.progressBar.layoutIfNeeded)
+        UIView.animate(withDuration: 0.15, animations: v.progressBar.layoutIfNeeded)
     }
     
     private func resetVisualState() {
