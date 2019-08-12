@@ -23,33 +23,21 @@ final class YPBottomPagerView: UIView {
             header
         )
         
-        layout(
-            0,
-            |scrollView|,
-            0,
-            |header| ~ 44
-        )
-        
-        if #available(iOS 11.0, *) {
-            header.Bottom == safeAreaLayoutGuide.Bottom
-        } else {
-            header.bottom(0)
-        }
-        header.heightConstraint?.constant = YPConfig.hidesBottomBar ? 0 : 44
-        
         if #available(iOS 11, *) {
-            let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
-            blurView.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(blurView)
-            sendSubviewToBack(blurView)
-            
             NSLayoutConstraint.activate([
-                blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
-                blurView.topAnchor.constraint(equalTo: topAnchor),
-                blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
-                blurView.bottomAnchor.constraint(equalTo: bottomAnchor)
+                header.topAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -44)
             ])
         }
+        
+        scrollView.fillContainer()
+        
+        NSLayoutConstraint.activate([
+            header.leadingAnchor.constraint(equalTo: leadingAnchor),
+            header.trailingAnchor.constraint(equalTo: trailingAnchor),
+            header.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        
+        header.heightConstraint?.constant = YPConfig.hidesBottomBar ? 0 : 44
         
         clipsToBounds = false
         setupScrollView()
