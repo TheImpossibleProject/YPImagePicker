@@ -55,19 +55,19 @@
                     <rect key="frame" x="0.0" y="375" width="375" height="252"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W4N-1E-jNP" customClass="TrimmerView" customModule="PryntTrimmerView">
-                            <rect key="frame" x="10" y="10" width="355" height="84"/>
+                            <rect key="frame" x="20" y="20" width="335" height="84"/>
                         </view>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tqq-Gf-aeR" customClass="ThumbSelectorView" customModule="PryntTrimmerView">
-                            <rect key="frame" x="10" y="10" width="355" height="84"/>
+                            <rect key="frame" x="20" y="20" width="335" height="84"/>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Trimmed: 10.0 s" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y9b-Em-3Mc">
-                            <rect key="frame" x="10" y="102" width="81" height="16"/>
+                            <rect key="frame" x="10" y="112" width="81" height="16"/>
                             <fontDescription key="fontDescription" name="RealHeadOffc-Medium" family="Real Head Offc" pointSize="11"/>
-                            <color key="textColor" systemColor="systemOrangeColor" red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Max. 10.0 s" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TiN-Nv-BdF">
-                            <rect key="frame" x="302" y="102" width="63" height="17"/>
+                            <rect key="frame" x="302" y="112" width="63" height="17"/>
                             <fontDescription key="fontDescription" name="RealHeadOffc-Medium" family="Real Head Offc" pointSize="12"/>
                             <color key="textColor" red="0.050980392156862744" green="0.050980392156862744" blue="0.050980392156862744" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
@@ -78,14 +78,14 @@
                         <constraint firstItem="TiN-Nv-BdF" firstAttribute="top" secondItem="W4N-1E-jNP" secondAttribute="bottom" constant="8" id="254-Tw-nsS"/>
                         <constraint firstItem="y9b-Em-3Mc" firstAttribute="top" secondItem="W4N-1E-jNP" secondAttribute="bottom" constant="8" id="7dm-Cn-UEk"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="leading" secondItem="W4N-1E-jNP" secondAttribute="leading" id="GFg-oD-rpc"/>
-                        <constraint firstItem="W4N-1E-jNP" firstAttribute="leading" secondItem="dMy-Fy-gyR" secondAttribute="leading" constant="10" id="IGg-wF-gcV"/>
+                        <constraint firstItem="W4N-1E-jNP" firstAttribute="leading" secondItem="dMy-Fy-gyR" secondAttribute="leading" constant="20" id="IGg-wF-gcV"/>
                         <constraint firstItem="W4N-1E-jNP" firstAttribute="height" secondItem="dMy-Fy-gyR" secondAttribute="height" multiplier="1:3" id="O8d-8f-QKt"/>
                         <constraint firstItem="y9b-Em-3Mc" firstAttribute="leading" secondItem="dMy-Fy-gyR" secondAttribute="leading" constant="10" id="OjY-6Q-Bew"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="top" secondItem="W4N-1E-jNP" secondAttribute="top" id="T6m-tY-U37"/>
-                        <constraint firstItem="W4N-1E-jNP" firstAttribute="top" secondItem="dMy-Fy-gyR" secondAttribute="top" constant="10" id="XKg-VC-ijz"/>
+                        <constraint firstItem="W4N-1E-jNP" firstAttribute="top" secondItem="dMy-Fy-gyR" secondAttribute="top" constant="20" id="XKg-VC-ijz"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="trailing" secondItem="W4N-1E-jNP" secondAttribute="trailing" id="bpp-dw-jOk"/>
                         <constraint firstAttribute="trailing" secondItem="TiN-Nv-BdF" secondAttribute="trailing" constant="10" id="mne-Ad-i66"/>
-                        <constraint firstAttribute="trailing" secondItem="W4N-1E-jNP" secondAttribute="trailing" constant="10" id="nMz-fm-d4C"/>
+                        <constraint firstAttribute="trailing" secondItem="W4N-1E-jNP" secondAttribute="trailing" constant="20" id="nMz-fm-d4C"/>
                         <constraint firstItem="Tqq-Gf-aeR" firstAttribute="bottom" secondItem="W4N-1E-jNP" secondAttribute="bottom" id="vGS-BO-IUw"/>
                     </constraints>
                 </view>
