@@ -39,6 +39,9 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.focusTapped(_:)))
         tapRecognizer.delegate = self
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
+        
+        YPHelper.changeBackButtonIcon(self)
+        YPHelper.changeBackButtonTitle(self)
     }
     
     func start() {

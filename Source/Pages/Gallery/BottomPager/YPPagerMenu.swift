@@ -38,7 +38,12 @@ final class YPPagerMenu: UIView {
                 |m
             }
             
+            layout(0,
+                   m
+            )
+            
             previousMenuItem = m
+            m.height(44)
         }
         
         if #available(iOS 10, *) {
