@@ -182,6 +182,14 @@ class LibraryMediaManager {
         inverseIndex = fetchResult.index(of: last) - index
         return fetchResult[inverseIndex]
     }
+    
+    func inverseIndex(for index: Int) -> Int {
+        var inverseIndex = index
+        guard let last = fetchResult.lastObject else { return inverseIndex }
+        inverseIndex = fetchResult.index(of: last) - index
+        
+        return inverseIndex
+    }
 }
 
 extension LibraryMediaManager: AssetProvider {
@@ -209,5 +217,17 @@ extension LibraryMediaManager: AssetProvider {
     
     func collectionIsAllPhotos(_ collection: PHAssetCollection) -> Bool {
         return PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil).firstObject == collection
+    }
+    
+    func indexPathForAsset(_ asset: PHAsset, isInverseIndexed: Bool) -> IndexPath? {
+        var indexPath: IndexPath? = nil
+        fetchResult.enumerateObjects { (enumeratedAsset, index, shouldStop) in
+            if enumeratedAsset.localIdentifier == asset.localIdentifier {
+                indexPath = IndexPath(item: isInverseIndexed ? self.inverseIndex(for: index) : index, section: 0)
+                shouldStop.pointee = true
+            }
+        }
+        
+        return indexPath
     }
 }
