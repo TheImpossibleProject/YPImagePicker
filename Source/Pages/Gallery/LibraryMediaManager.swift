@@ -177,9 +177,7 @@ class LibraryMediaManager {
     }
     
     func inverseAsset(at index: Int) -> PHAsset {
-        var inverseIndex = index
-        guard let last = fetchResult.lastObject else { return fetchResult[inverseIndex] }
-        inverseIndex = fetchResult.index(of: last) - index
+        let inverseIndex = self.inverseIndex(for: index)
         return fetchResult[inverseIndex]
     }
     
