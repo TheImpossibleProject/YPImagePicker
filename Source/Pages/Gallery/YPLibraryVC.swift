@@ -28,6 +28,7 @@ protocol AssetProvider {
     
     func asset(at index: Int, inverseSorted: Bool) -> PHAsset
     func collectionIsAllPhotos(_ collection: PHAssetCollection) -> Bool
+    func indexPathForAsset(_ asset: PHAsset, isInverseIndexed: Bool) -> IndexPath?
 }
 
 public class YPLibraryVC: UIViewController, YPPermissionCheckable {
@@ -43,6 +44,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     internal var latestImageTapped = ""
     internal let panGestureHelper = PanGestureHelper()
     internal var requiresInverseSorting = false
+    var scrollToItem: YPMediaItem?
 
     // MARK: - Init
     
@@ -139,6 +141,9 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         }
         
         NotificationCenter.default.post(name: Notification.Name.YPImagePickerAssetViewDidAppear, object: v.assetViewContainer)
+        if let item = scrollToItem {
+            scrollToItem(item)
+        }
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
