@@ -101,6 +101,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
         
         maxVideoLengthLabel.text = String(format: YPConfig.wordings.videoTrimmingScreen.maxVideoLenghtText,
                                           YPConfig.video.trimmerMaxDuration)
+        positionBarStoppedMoving(.zero)
         updateTrimmedLabel()
     }
     
@@ -225,6 +226,9 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     // MARK: - Trimmer playback
     
     @objc func itemDidFinishPlaying(_ notification: Notification) {
+        guard let item = notification.object as? AVPlayerItem,
+            item == videoView.player.currentItem else { return }
+        
         if let startTime = trimmerView.startTime {
             videoView.player.seek(to: startTime)
         }

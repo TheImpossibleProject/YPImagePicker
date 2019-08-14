@@ -197,7 +197,7 @@ public struct YPConfigVideo {
     /// Choose the videoCompression.  Defaults to AVAssetExportPresetHighestQuality
     public var compression: String = AVAssetExportPresetHighestQuality
     
-    /// Choose the result video extension if you trim or compress a video. Defaults to mov.
+    /// Choose the result video extension if you trim or compress a video. Defaults to mp4.
     public var fileType: AVFileType = .mov
     
     /// Defines the time limit for recording videos.
