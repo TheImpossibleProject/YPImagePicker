@@ -24,6 +24,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     var shouldHideStatusBar = false
     var shouldShowCancelButton = true
     var initialStatusBarHidden = false
+    var scrollToItem: YPMediaItem?
     weak var imagePickerDelegate: ImagePickerDelegate?
     
     
@@ -65,6 +66,7 @@ open class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         if YPConfig.screens.contains(.library) {
             libraryVC = YPLibraryVC()
             libraryVC?.delegate = self
+            libraryVC?.scrollToItem = scrollToItem
         }
         
         // Camera
