@@ -120,7 +120,7 @@ public struct YPImagePickerConfiguration {
     public var videoCompression: String = AVAssetExportPresetHighestQuality
     
     @available(iOS, obsoleted: 3.0.0, renamed: "video.fileType")
-    public var videoExtension: AVFileType = .mov
+    public var videoExtension: AVFileType = .mp4
     
     @available(iOS, obsoleted: 3.0.0, renamed: "video.recordingTimeLimit")
     public var videoRecordingTimeLimit: TimeInterval = 60.0
@@ -198,7 +198,7 @@ public struct YPConfigVideo {
     public var compression: String = AVAssetExportPresetHighestQuality
     
     /// Choose the result video extension if you trim or compress a video. Defaults to mp4.
-    public var fileType: AVFileType = .mov
+    public var fileType: AVFileType = .mp4
     
     /// Defines the time limit for recording videos.
     /// Default is 60 seconds.
