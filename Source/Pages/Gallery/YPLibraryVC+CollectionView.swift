@@ -7,9 +7,22 @@
 //
 
 import UIKit
+import Photos
 
 extension YPLibraryVC {
     var isLimitExceeded: Bool { return selection.count >= YPConfig.library.maxNumberOfItems }
+    
+    func scrollToItem(_ item: YPMediaItem) {
+        var asset: PHAsset? = nil
+        switch item {
+        case .photo(let photo): asset = photo.asset
+        case .video(let video): asset = video.asset
+        }
+        
+        guard let a = asset,
+        let indexPath = mediaManager.indexPathForAsset(a, isInverseIndexed: requiresInverseSorting) else { return }
+        v.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+    }
     
     func setupCollectionView() {
         v.collectionView.dataSource = self

@@ -26,6 +26,7 @@ open class YPImagePicker: UINavigationController {
         _didFinishPicking = completion
     }
     public weak var imagePickerDelegate: YPImagePickerDelegate?
+    public var scrollToItem: YPMediaItem?
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
         return YPImagePickerConfiguration.shared.preferredStatusBarStyle
@@ -64,6 +65,7 @@ open class YPImagePicker: UINavigationController {
     
     override open func viewDidLoad() {
         super.viewDidLoad()
+        picker.scrollToItem = scrollToItem
         
         picker.didClose = { [weak self] in
             self?._didFinishPicking?([], true)
