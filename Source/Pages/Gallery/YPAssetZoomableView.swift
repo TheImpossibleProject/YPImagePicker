@@ -44,7 +44,7 @@ final class YPAssetZoomableView: UIScrollView {
             isLandscape = image.size.width > image.size.height
         }
         
-        let scale = fit ? squaredZoomScale : (isLandscape ? 1 : YPImagePickerConfiguration.shared.customAspectRatio)
+        let scale = fit ? squaredZoomScale : (isLandscape ? 1 : YPConfig.customAspectRatio)
         setZoomScale(scale, animated: isAnimated)
         myDelegate?.ypAssetZoomableViewScrollViewDidEndZooming()
     }
@@ -178,12 +178,11 @@ final class YPAssetZoomableView: UIScrollView {
         
         let w = image.size.width
         let h = image.size.height
-        
-        
+    
         if w > h {
-            return (w / h) * YPImagePickerConfiguration.shared.customAspectRatio
+            return (w / h) * YPConfig.customAspectRatio
         } else {
-            return (h / w) * YPImagePickerConfiguration.shared.customAspectRatio
+            return (h / w)
         }
     }
     
