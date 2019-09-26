@@ -140,10 +140,11 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             multipleSelectionButtonTapped()
         }
         
-        NotificationCenter.default.post(name: Notification.Name.YPImagePickerAssetViewDidAppear, object: v.assetViewContainer)
         if let item = scrollToItem {
             scrollToItem(item)
         }
+        
+        NotificationCenter.default.post(name: Notification.Name.YPImagePickerAssetViewDidAppear, object: v.assetViewContainer)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
