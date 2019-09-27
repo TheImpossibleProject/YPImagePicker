@@ -22,6 +22,11 @@ extension YPLibraryVC {
         guard let a = asset,
         let indexPath = mediaManager.indexPathForAsset(a, isInverseIndexed: requiresInverseSorting) else { return }
         v.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
+        // waiting for the scroll animation to finish
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.collectionView(strongSelf.v.collectionView, didSelectItemAt: indexPath)
+        }
     }
     
     func setupCollectionView() {
