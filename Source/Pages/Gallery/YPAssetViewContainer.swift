@@ -17,7 +17,12 @@ class YPAssetViewContainer: UIView {
     public let grid = YPGridView()
     public let curtain = UIView()
     public let spinnerView = UIView()
-    public let squareCropButton = UIButton()
+    public let squareCropButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setBackgroundColor(UIColor(white: 0.7, alpha: 0.5), forState: .normal)
+        return button
+    }()
+    public let squareCropButtonSize: CGFloat = 42
     public let multipleSelectionButton = UIButton()
     public var onlySquare = YPConfig.library.onlySquare
     public var isShown = true
@@ -70,9 +75,11 @@ class YPAssetViewContainer: UIView {
             // Crop Button
             squareCropButton.setImage(YPConfig.icons.cropIcon, for: .normal)
             sv(squareCropButton)
-            squareCropButton.size(42)
+            squareCropButton.size(squareCropButtonSize)
             |-15-squareCropButton
             squareCropButton.Bottom == zoomableView!.Bottom - 15
+            squareCropButton.layer.cornerRadius = squareCropButtonSize / 2
+            squareCropButton.clipsToBounds = true
         }
         
         // Multiple selection button
