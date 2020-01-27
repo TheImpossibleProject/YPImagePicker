@@ -236,6 +236,8 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             if hasPermission && !strongSelf.initialized {
                 strongSelf.initialize()
                 strongSelf.initialized = true
+            } else {
+                strongSelf.v.hideLoader()
             }
         }
     }
