@@ -114,6 +114,10 @@ extension YPLibraryView {
         assetViewContainer.spinnerView.alpha = 0
     }
     
+    func setHideButtons(_ isHidden: Bool) {
+        assetViewContainer.subviews.filter { $0 is UIButton }.forEach { $0.isHidden = isHidden }
+    }
+    
     func updateProgress(_ progress: Float) {
         progressView.isHidden = progress > 0.99 || progress == 0
         progressView.progress = progress
