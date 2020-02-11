@@ -238,6 +238,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
                 strongSelf.initialized = true
             } else {
                 strongSelf.v.hideLoader()
+                strongSelf.v.assetViewContainer.multipleSelectionButton.isHidden = true
             }
         }
     }
