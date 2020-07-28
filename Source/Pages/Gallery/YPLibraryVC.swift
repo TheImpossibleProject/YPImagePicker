@@ -39,12 +39,19 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     internal var multipleSelectionEnabled = false
     internal var initialized = false
     internal var selection = [YPLibrarySelection]()
-    internal var currentlySelectedIndex: Int = 0
+    internal var currentlySelectedIndex: Int = 0 {
+        didSet {
+            userDidMakeSelection = true
+        }
+    }
     internal let mediaManager = LibraryMediaManager() as AssetProvider
     internal var latestImageTapped = ""
     internal let panGestureHelper = PanGestureHelper()
     internal var requiresInverseSorting = false
     var scrollToItem: YPMediaItem?
+    var userDidMakeSelection: Bool = false
+    var userDidStartScrolling: Bool = false
+    internal var autoScrollTimer: Timer?
 
     // MARK: - Init
     
@@ -140,11 +147,25 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             multipleSelectionButtonTapped()
         }
         
-        if let item = scrollToItem {
-            scrollToItem(item)
+        if #available(iOS 10.0, *) {
+            autoScrollTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { [weak self] _ in
+                self?.autoScrollTimer?.invalidate()
+                self?.autoScrollTimer = nil
+                self?.autoScrollToItem()
+            })
         }
         
         NotificationCenter.default.post(name: Notification.Name.YPImagePickerAssetViewDidAppear, object: v.assetViewContainer)
+    }
+
+    private func autoScrollToItem() {
+        guard !userDidMakeSelection,
+            !userDidStartScrolling,
+            let item = scrollToItem else {
+                return
+        }
+        
+        scrollToItem(item)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

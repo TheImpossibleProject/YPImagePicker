@@ -86,7 +86,7 @@ extension YPLibraryVC {
                 }
             }
             v.collectionView.reloadItems(at: selectedIndexPaths)
-			
+            
             // Replace the current selected image with the previously selected one
             if let previouslySelectedIndexPath = selectedIndexPaths.last {
                 v.collectionView.deselectItem(at: indexPath, animated: false)
@@ -94,7 +94,7 @@ extension YPLibraryVC {
                 currentlySelectedIndex = previouslySelectedIndexPath.row
                 changeAsset(mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting))
             }
-			
+            
             checkLimit()
         }
     }
@@ -122,6 +122,11 @@ extension YPLibraryVC {
 }
 
 extension YPLibraryVC: UICollectionViewDataSource {
+    
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        userDidStartScrolling = true
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return mediaManager.fetchCount
     }
