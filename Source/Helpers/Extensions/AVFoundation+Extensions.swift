@@ -1,11 +1,3 @@
-//
-//  AVCaptureDevice+Extensions.swift
-//  YPImagePicker
-//
-//  Created by Nik Kov on 09.04.18.
-//  Copyright © 2018 Yummypets. All rights reserved.
-//
-
 import UIKit
 import Foundation
 import AVFoundation
@@ -13,7 +5,13 @@ import AVFoundation
 // MARK: - Global functions
 
 func deviceForPosition(_ p: AVCaptureDevice.Position) -> AVCaptureDevice? {
-    for device in AVCaptureDevice.devices(for: AVMediaType.video) where device.position == p {
+    let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera,
+                                                                 .builtInTelephotoCamera,
+                                                                 .builtInTrueDepthCamera],
+                                                   mediaType: .video,
+                                                   position: p)
+    
+    for device in session.devices where device.position == p {
         return device
     }
     return nil

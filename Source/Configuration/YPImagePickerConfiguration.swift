@@ -64,7 +64,7 @@ public struct YPImagePickerConfiguration {
     /// Defines which screens are shown at launch, and their order.
     /// Default value is `[.library, .photo]`
     public var screens: [YPPickerScreen] = [.library, .photo]
-
+    
     /// Adds a Crop step in the photo taking process, after filters.  Defaults to .none
     public var showsCrop: YPCropType = .none
     
@@ -80,7 +80,7 @@ public struct YPImagePickerConfiguration {
     
     /// Defines if the bottom bar should be hidden when showing the picker. Default is false.
     public var hidesBottomBar = false
-
+    
     /// Defines the preferredStatusBarAppearance
     public var preferredStatusBarStyle = UIStatusBarStyle.default
     
@@ -100,7 +100,6 @@ public struct YPImagePickerConfiguration {
         YPFilter(name: "Toaster", applier: YPFilter.toasterFilter),
         YPFilter(name: "1977", applier: YPFilter.apply1977Filter),
         YPFilter(name: "Clarendon", applier: YPFilter.clarendonFilter),
-        YPFilter(name: "HazeRemoval", applier: YPFilter.hazeRemovalFilter),
         YPFilter(name: "Chrome", coreImageFilterName: "CIPhotoEffectChrome"),
         YPFilter(name: "Fade", coreImageFilterName: "CIPhotoEffectFade"),
         YPFilter(name: "Instant", coreImageFilterName: "CIPhotoEffectInstant"),
@@ -112,7 +111,7 @@ public struct YPImagePickerConfiguration {
         YPFilter(name: "Tone", coreImageFilterName: "CILinearToSRGBToneCurve"),
         YPFilter(name: "Linear", coreImageFilterName: "CISRGBToneCurveToLinear"),
         YPFilter(name: "Sepia", coreImageFilterName: "CISepiaTone"),
-        ]
+    ]
     
     /// Migration
     
@@ -133,7 +132,7 @@ public struct YPImagePickerConfiguration {
     
     @available(iOS, obsoleted: 3.0.0, renamed: "video.trimmerMaxDuration")
     public var trimmerMaxDuration: Double = 60.0
-
+    
     @available(iOS, obsoleted: 3.0.0, renamed: "video.trimmerMinDuration")
     public var trimmerMinDuration: Double = 3.0
     
@@ -164,7 +163,7 @@ public struct YPConfigLibrary {
     
     /// Set this to true if you want to force the library output to be a squared image. Defaults to false
     public var onlySquare = false
-
+    
     /// Set this to true if you want to force the zoom to be in
     public var shouldCropToSquare = false
     
@@ -173,23 +172,23 @@ public struct YPConfigLibrary {
     
     /// Choose what media types are available in the library. Defaults to `.photo`
     public var mediaType = YPlibraryMediaType.photo
-
+    
     /// Initial state of multiple selection button.
     public var defaultMultipleSelection = false
-
+    
     /// Anything superior than 1 will enable the multiple selection feature.
     public var maxNumberOfItems = 1
     
     /// Anything greater than 1 will desactivate live photo and video modes (library only) and
     // force users to select at least the number of items defined.
     public var minNumberOfItems = 1
-
+    
     /// Set the number of items per row in collection view. Defaults to 4.
     public var numberOfItemsInRow: Int = 4
-
+    
     /// Set the spacing between items in collection view. Defaults to 1.0.
     public var spacingBetweenItems: CGFloat = 1.0
-
+    
     /// Allow to skip the selections gallery when selecting the multiple media items. Defaults to false.
     public var skipSelectionsGallery = false
 }

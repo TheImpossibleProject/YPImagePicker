@@ -89,7 +89,10 @@ class YPVideoCaptureHelper: NSObject {
             }
             
             // Re Add audio recording
-            for device in AVCaptureDevice.devices(for: .audio) {
+            let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone],
+                                                           mediaType: .audio,
+                                                           position: .unspecified)
+            for device in session.devices {
                 if let audioInput = try? AVCaptureDeviceInput(device: device) {
                     if strongSelf.session.canAddInput(audioInput) {
                         strongSelf.session.addInput(audioInput)
@@ -179,7 +182,8 @@ class YPVideoCaptureHelper: NSObject {
             }
             
             // Add audio recording
-            for device in AVCaptureDevice.devices(for: .audio) {
+            let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInMicrophone], mediaType: .audio, position: .unspecified)
+            for device in discoverySession.devices {
                 if let audioInput = try? AVCaptureDeviceInput(device: device) {
                     if session.canAddInput(audioInput) {
                         session.addInput(audioInput)
@@ -213,7 +217,7 @@ class YPVideoCaptureHelper: NSObject {
     }
     
     // MARK: - Orientation
-
+    
     /// This enables to get the correct orientation even when the device is locked for orientation \o/
     private func checkOrientation(completion: @escaping(_ orientation: AVCaptureVideoOrientation?)->()) {
         motionManager.accelerometerUpdateInterval = 5
@@ -231,7 +235,7 @@ class YPVideoCaptureHelper: NSObject {
             }
         }
     }
-
+    
     // MARK: - Preview
     
     func tryToSetupPreview() {

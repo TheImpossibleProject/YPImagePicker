@@ -27,7 +27,7 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
     }
     
     override open func loadView() {
-        self.automaticallyAdjustsScrollViewInsets = false
+        v.scrollView.contentInsetAdjustmentBehavior = .never
         v.scrollView.delegate = self
         view = v
         v.backgroundColor = .clear
@@ -36,7 +36,7 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.pagerScrollViewDidScroll(scrollView)
     }
-
+    
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                           withVelocity velocity: CGPoint,
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -106,7 +106,7 @@ open class YPBottomPager: UIViewController, UIScrollViewDelegate {
         v.scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: animated)
         selectPage(page)
     }
-
+    
     func selectPage(_ page: Int) {
         guard page != currentPage && page >= 0 && page < controllers.count else {
             return
