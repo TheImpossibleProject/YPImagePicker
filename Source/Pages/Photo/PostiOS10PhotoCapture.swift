@@ -42,6 +42,7 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         // Catpure Highest Quality possible.
         settings.isHighResolutionPhotoEnabled = true
         
+        #if !targetEnvironment(simulator)
         // Set flash mode.
         if let deviceInput = deviceInput {
             if deviceInput.device.isFlashAvailable {
@@ -61,6 +62,8 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
                 }
             }
         }
+        
+        #endif
         return settings
     }
     
