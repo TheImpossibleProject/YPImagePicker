@@ -39,20 +39,24 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     internal var multipleSelectionEnabled = false
     internal var initialized = false
     internal var selection = [YPLibrarySelection]()
-    internal var currentlySelectedIndex: Int = 0 {
-        didSet {
-            userDidMakeSelection = true
-        }
-    }
+    internal var currentlySelectedIndex = 0
     internal let mediaManager = LibraryMediaManager() as AssetProvider
     internal var latestImageTapped = ""
     internal let panGestureHelper = PanGestureHelper()
     internal var requiresInverseSorting = false
     var scrollToItem: YPMediaItem?
-    var userDidMakeSelection: Bool = false
-    var userDidStartScrolling: Bool = false
-    internal var autoScrollTimer: Timer?
-
+    var scrollToIndexPath: IndexPath? {
+        guard let scrollToItem = scrollToItem else { return nil }
+        var asset: PHAsset? = nil
+        switch scrollToItem {
+        case .photo(let photo): asset = photo.asset
+        case .video(let video): asset = video.asset
+        }
+        
+        guard let a = asset, let ip = mediaManager.indexPathForAsset(a, isInverseIndexed: requiresInverseSorting) else { return nil }
+        return ip
+    }
+    
     // MARK: - Init
     
     public required init() {
@@ -78,7 +82,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     func initialize() {
         mediaManager.initialize()
         mediaManager.set(libraryView: v)
-
+        
         if mediaManager.hasFetchResults {
             return
         }
@@ -88,7 +92,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         panGestureHelper.registerForPanGesture(on: v)
         registerForTapOnPreview()
         refreshMediaRequest()
-
+        
         if YPConfig.library.defaultMultipleSelection {
             multipleSelectionButtonTapped()
         }
@@ -113,7 +117,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             guard let strongSelf = self else {
                 return
             }
-
+            
             strongSelf.updateCropInfo()
         }
         v.collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0)
@@ -146,26 +150,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         if YPConfig.library.minNumberOfItems > 1 {
             multipleSelectionButtonTapped()
         }
-        
-        if #available(iOS 10.0, *) {
-            autoScrollTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false, block: { [weak self] _ in
-                self?.autoScrollTimer?.invalidate()
-                self?.autoScrollTimer = nil
-                self?.autoScrollToItem()
-            })
-        }
-        
         NotificationCenter.default.post(name: Notification.Name.YPImagePickerAssetViewDidAppear, object: v.assetViewContainer)
-    }
-
-    private func autoScrollToItem() {
-        guard !userDidMakeSelection,
-            !userDidStartScrolling,
-            let item = scrollToItem else {
-                return
-        }
-        
-        scrollToItem(item)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -186,7 +171,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     }
     
     // MARK: - Multiple Selection
-
+    
     @objc
     func multipleSelectionButtonTapped() {
         
@@ -200,7 +185,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         }
         
         multipleSelectionEnabled = !multipleSelectionEnabled
-
+        
         if multipleSelectionEnabled {
             if selection.isEmpty {
                 let asset = mediaManager.asset(at: currentlySelectedIndex, inverseSorted: requiresInverseSorting)
@@ -216,7 +201,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             selection.removeAll()
             addToSelection(indexPath: IndexPath(row: currentlySelectedIndex, section: 0))
         }
-
+        
         v.assetViewContainer.setMultipleSelectionMode(on: multipleSelectionEnabled)
         v.collectionView.reloadData()
         checkLimit()
@@ -263,7 +248,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
             }
         }
     }
-
+    
     // Async beacause will prompt permission if .notDetermined
     // and ask custom popup if denied.
     func checkPermissionToAccessPhotoLibrary(block: @escaping (Bool) -> Void) {
@@ -297,16 +282,23 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         } else {
             mediaManager.set(fetchResult: PHAsset.fetchAssets(with: buildPHFetchOptions()))
         }
-                
+        
         if mediaManager.fetchCount > 0 {
-            changeAsset(mediaManager.asset(at: 0, inverseSorted: requiresInverseSorting))
+            let indexPath = scrollToIndexPath ?? IndexPath(row: 0, section: 0)
+            changeAsset(mediaManager.asset(at: indexPath.row, inverseSorted: requiresInverseSorting))
             v.collectionView.reloadData()
-            v.collectionView.selectItem(at: IndexPath(row: 0, section: 0),
-                                             animated: false,
-                                             scrollPosition: UICollectionView.ScrollPosition())
-            if !multipleSelectionEnabled {
-                addToSelection(indexPath: IndexPath(row: 0, section: 0))
+            // request for scroll needs to be dispatched on an async block as collection view
+            // is not rsponding to request for scrolling to items that are not in the visisble
+            // section of the view at this point
+            DispatchQueue.main.async { [weak self] in
+                self?.v.collectionView.selectItem(at: indexPath,
+                                                  animated: false,
+                                                  scrollPosition: .top)
             }
+            if !multipleSelectionEnabled {
+                addToSelection(indexPath: indexPath)
+            }
+            currentlySelectedIndex = indexPath.row
         } else {
             delegate?.noPhotosForOptions()
         }
@@ -411,9 +403,9 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
     
     internal func fetchStoredCrop() -> YPLibrarySelection? {
         if self.multipleSelectionEnabled,
-            self.selection.contains(where: { $0.index == self.currentlySelectedIndex }) {
+           self.selection.contains(where: { $0.index == self.currentlySelectedIndex }) {
             guard let selectedAssetIndex = self.selection
-                .firstIndex(where: { $0.index == self.currentlySelectedIndex }) else {
+                    .firstIndex(where: { $0.index == self.currentlySelectedIndex }) else {
                 return nil
             }
             return self.selection[selectedAssetIndex]
@@ -507,7 +499,7 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
                     multipleItemsCallback(resultMediaItems)
                     self.delegate?.libraryViewFinishedLoading()
                 }
-        } else {
+            } else {
                 let asset = selectedAssets.first!.asset
                 switch asset.mediaType {
                 case .video:
@@ -541,8 +533,8 @@ public class YPLibraryVC: UIViewController, YPPermissionCheckable {
         let width = (CGFloat(asset.pixelWidth) * cropRect.width)//.rounded(.toNearestOrEven)
         let height = (CGFloat(asset.pixelHeight) * cropRect.height)//.rounded(.toNearestOrEven)
         // round to lowest even number
-//        width = (width.truncatingRemainder(dividingBy: 2) == 0) ? width : width - 1
-//        height = (height.truncatingRemainder(dividingBy: 2) == 0) ? height : height - 1
+        //        width = (width.truncatingRemainder(dividingBy: 2) == 0) ? width : width - 1
+        //        height = (height.truncatingRemainder(dividingBy: 2) == 0) ? height : height - 1
         return CGSize(width: width, height: height)
     }
     

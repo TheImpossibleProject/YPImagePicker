@@ -12,23 +12,6 @@ import Photos
 extension YPLibraryVC {
     var isLimitExceeded: Bool { return selection.count >= YPConfig.library.maxNumberOfItems }
     
-    func scrollToItem(_ item: YPMediaItem) {
-        var asset: PHAsset? = nil
-        switch item {
-        case .photo(let photo): asset = photo.asset
-        case .video(let video): asset = video.asset
-        }
-        
-        guard let a = asset,
-        let indexPath = mediaManager.indexPathForAsset(a, isInverseIndexed: requiresInverseSorting) else { return }
-        v.collectionView.scrollToItem(at: indexPath, at: .top, animated: true)
-        // waiting for the scroll animation to finish
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
-            guard let strongSelf = self else { return }
-            strongSelf.collectionView(strongSelf.v.collectionView, didSelectItemAt: indexPath)
-        }
-    }
-    
     func setupCollectionView() {
         v.collectionView.dataSource = self
         v.collectionView.delegate = self
@@ -122,10 +105,6 @@ extension YPLibraryVC {
 }
 
 extension YPLibraryVC: UICollectionViewDataSource {
-    
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        userDidStartScrolling = true
-    }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return mediaManager.fetchCount
