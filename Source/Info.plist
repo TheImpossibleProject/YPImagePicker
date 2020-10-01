@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>In order to select an image, the Polaroid Originals app needs permission to access your photos.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>In order to take photos, the Polaroid Originals app needs permission to access your phone&apos;s build-in camera.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
