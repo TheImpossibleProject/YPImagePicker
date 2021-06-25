@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 import UIKit
 
-protocol YPPhotoCapture: class {
+protocol YPPhotoCapture: AnyObject {
     
     // Public api
     func start(with previewView: UIView, completion: @escaping () -> Void)

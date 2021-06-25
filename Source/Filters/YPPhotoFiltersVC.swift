@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol IsMediaFilterVC: class {
+protocol IsMediaFilterVC: AnyObject {
     var didSave: ((YPMediaItem) -> Void)? { get set }
     var didCancel: (() -> Void)? { get set }
 }

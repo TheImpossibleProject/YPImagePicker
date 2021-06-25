@@ -10,7 +10,7 @@
 import UIKit
 import Photos
 
-protocol YPAssetZoomableViewDelegate: class {
+protocol YPAssetZoomableViewDelegate: AnyObject {
     func ypAssetZoomableViewDidLayoutSubviews(_ zoomableView: YPAssetZoomableView)
     func ypAssetZoomableViewScrollViewDidZoom()
     func ypAssetZoomableViewScrollViewDidEndZooming()

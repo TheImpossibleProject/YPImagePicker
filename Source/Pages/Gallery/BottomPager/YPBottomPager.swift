@@ -9,7 +9,7 @@
 import UIKit
 import Stevia
 
-protocol YPBottomPagerDelegate: class {
+protocol YPBottomPagerDelegate: AnyObject {
     func pagerScrollViewDidScroll(_ scrollView: UIScrollView)
     func pagerDidSelectController(_ vc: UIViewController)
 }

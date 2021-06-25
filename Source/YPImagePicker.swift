@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import Photos
 
-public protocol YPCutomImagePickerRoot: class {
+public protocol YPCutomImagePickerRoot: AnyObject {
     var presentImagePickerHandler: () -> () { get set }
     var cancelHandler: () -> () { get set }
 }

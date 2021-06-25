@@ -9,7 +9,7 @@
 import Foundation
 
 @objc
-public protocol YPLibraryViewDelegate: class {
+public protocol YPLibraryViewDelegate: AnyObject {
     func libraryViewStartedLoading()
     func libraryViewFinishedLoading()
     func libraryViewDidToggleMultipleSelection(enabled: Bool)
