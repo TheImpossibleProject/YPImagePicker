@@ -25,26 +25,26 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         
         if let overlayView = overlayView {
             // View Hierarchy
-            sv(
+            subviews(
                 previewViewContainer,
                 overlayView,
                 progressBar,
                 timeElapsedLabel,
                 flashButton,
                 flipButton,
-                buttonsContainer.sv(
+                buttonsContainer.subviews(
                     shotButton
                 )
             )
         } else {
             // View Hierarchy
-            sv(
+            subviews(
                 previewViewContainer,
                 progressBar,
                 timeElapsedLabel,
                 flashButton,
                 flipButton,
-                buttonsContainer.sv(
+                buttonsContainer.subviews(
                     shotButton
                 )
             )
@@ -76,7 +76,7 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         timeElapsedLabel-(15+sideMargin)-|
         timeElapsedLabel.Top == previewViewContainer.Top + 15
         
-        shotButton.centerVertically(-22)
+        shotButton.centerVertically(offset: -22)
         shotButton.size(100).centerHorizontally()
 
         // Style

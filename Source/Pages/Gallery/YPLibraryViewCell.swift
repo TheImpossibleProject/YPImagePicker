@@ -20,7 +20,7 @@ class YPMultipleSelectionIndicator: UIView {
         
         let size: CGFloat = 20
         
-        sv(
+        subviews(
             circle,
             label
         )
@@ -64,7 +64,7 @@ class YPLibraryViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        sv(
+        subviews(
             imageView,
             durationLabel,
             multipleSelectionIndicator
