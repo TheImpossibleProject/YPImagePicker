@@ -27,6 +27,10 @@ public class YPVideoView: UIView {
         return playerLayer.player!
     }
     
+    convenience init() {
+        self.init(frame: .zero)
+    }
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
