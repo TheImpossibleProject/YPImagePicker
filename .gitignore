@@ -18,7 +18,11 @@ profile
 DerivedData
 *.hmap
 *.ipa
-YPImagePicker.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+
+# Swift Package Manager
+Package.resolved
+.siwftpm/xcode/xcshareddata
+.swiftpm/xcode/xcuserdata
 
 # Bundler
 .bundle
