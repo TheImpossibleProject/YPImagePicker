@@ -14,7 +14,7 @@
         </array>
     </customFonts>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YPVideoFiltersVC" customModule="YPImagePicker" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="YPVideoFiltersVC" customModule="YPImagePicker">
             <connections>
                 <outlet property="coverBottomItem" destination="qy9-MY-67C" id="LaY-F2-uVO"/>
                 <outlet property="coverImageView" destination="daH-No-sZc" id="sNy-7V-7gV"/>
@@ -32,18 +32,18 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qy9-MY-67C" customClass="YPMenuItem" customModule="YPImagePicker" customModuleProvider="target">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qy9-MY-67C" customClass="YPMenuItem" customModule="YPImagePicker">
                     <rect key="frame" x="187.5" y="627" width="187.5" height="40"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="Ik5-9V-0hz"/>
                     </constraints>
                 </view>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uB8-a7-Vh0" customClass="YPMenuItem" customModule="YPImagePicker" customModuleProvider="target">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uB8-a7-Vh0" customClass="YPMenuItem" customModule="YPImagePicker">
                     <rect key="frame" x="0.0" y="627" width="187.5" height="40"/>
                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AFl-Bk-oPH" customClass="YPVideoView" customModule="YPImagePicker" customModuleProvider="target">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AFl-Bk-oPH" customClass="YPVideoView" customModule="YPImagePicker">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="AFl-Bk-oPH" secondAttribute="height" multiplier="1:1" id="tL6-cM-ei5"/>
