@@ -30,10 +30,18 @@ class YPAssetViewContainer: UIView {
     private let spinner = UIActivityIndicatorView(style: .medium)
     private var shouldCropToSquare = true
     private var isMultipleSelection = false
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonSetup()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        commonSetup()
+    }
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
+    private func commonSetup() {
         addSubview(grid)
         grid.frame = frame
         clipsToBounds = true
