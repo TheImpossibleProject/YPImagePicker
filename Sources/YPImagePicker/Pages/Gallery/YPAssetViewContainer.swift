@@ -27,6 +27,7 @@ class YPAssetViewContainer: UIView {
     public var onlySquare = YPConfig.library.onlySquare
     public var isShown = true
     
+    private let overlay = YPCircularCutoutView()
     private let spinner = UIActivityIndicatorView(style: .medium)
     private var shouldCropToSquare = true
     private var isMultipleSelection = false
@@ -64,12 +65,14 @@ class YPAssetViewContainer: UIView {
         // TODO: Add tap gesture to play/pause. Add double tap gesture to square/unsquare
         
         subviews(
+            overlay,
             spinnerView.subviews(
                 spinner
             ),
             curtain
         )
         
+        overlay.fillContainer()
         spinner.centerInContainer()
         spinnerView.fillContainer()
         curtain.fillContainer()
@@ -97,6 +100,7 @@ class YPAssetViewContainer: UIView {
         multipleSelectionButton.setImage(YPConfig.icons.multipleSelectionOffIcon, for: .normal)
         multipleSelectionButton.Bottom == zoomableView!.Bottom - 15
         
+        overlay.alpha = YPConfig.addCircularOverlayToPicker ? 1 : 0
     }
     
     // MARK: - Square button
