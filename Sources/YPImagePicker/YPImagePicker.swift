@@ -65,6 +65,14 @@ open class YPImagePicker: UINavigationController {
     
     override open func viewDidLoad() {
         super.viewDidLoad()
+        
+        if #available(iOS 15, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithTransparentBackground()
+            appearance.backgroundColor = .systemBackground
+            navigationBar.scrollEdgeAppearance = appearance
+        }
+        
         picker.scrollToItem = scrollToItem
         
         picker.didClose = { [weak self] in
