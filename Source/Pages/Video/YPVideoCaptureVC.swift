@@ -8,9 +8,8 @@
 
 import UIKit
 
-public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
-    
-    public var didCaptureVideo: ((URL) -> Void)?
+internal class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
+    var didCaptureVideo: ((URL) -> Void)?
     
     private let videoHelper = YPVideoCaptureHelper()
     private let v = YPCameraView(overlayView: nil)
@@ -18,9 +17,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     
     // MARK: - Init
     
-    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    public required init() {
+    required init() {
         super.init(nibName: nil, bundle: nil)
         title = YPConfig.wordings.videoTitle
         videoHelper.didCaptureVideo = { [weak self] videoURL in
@@ -37,9 +36,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     
     // MARK: - View LifeCycle
     
-    override public func loadView() { view = v }
+    override func loadView() { view = v }
     
-    override public func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         v.timeElapsedLabel.isHidden = false // Show the time elapsed label since we're in the video screen.
         setupButtons()
@@ -48,22 +47,18 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         // Focus
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(focusTapped(_:)))
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
+        
+        // Zoom
+        let pinchRecongizer = UIPinchGestureRecognizer(target: self, action: #selector(self.pinch(_:)))
+        v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
     }
 
     func start() {
-        v.shotButton.isEnabled = false
-        doAfterPermissionCheck { [weak self] in
-            guard let strongSelf = self else {
-                return
+        self.videoHelper.start(previewView: v.previewViewContainer,
+                               withVideoRecordingLimit: YPConfig.video.recordingTimeLimit) { [weak self] in
+            DispatchQueue.main.async {
+                self?.refreshState()
             }
-            self?.videoHelper.start(previewView: strongSelf.v.previewViewContainer,
-                                    withVideoRecordingLimit: YPConfig.video.recordingTimeLimit,
-                                    completion: {
-                                        DispatchQueue.main.async {
-                                            self?.v.shotButton.isEnabled = true
-                                            self?.refreshState()
-                                        }
-            })
         }
     }
     
@@ -93,12 +88,6 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     
     @objc
     func flipButtonTapped() {
-        doAfterPermissionCheck { [weak self] in
-            self?.flip()
-        }
-    }
-    
-    private func flip() {
         videoHelper.flipCamera {
             self.updateState {
                 $0.flashMode = self.flashModeFrom(videoHelper: self.videoHelper)
@@ -120,7 +109,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     
     @objc
     func shotButtonTapped() {
-        doAfterPermissionCheck { [weak self] in
+        doAfterCameraPermissionCheck { [weak self] in
             self?.toggleRecording()
         }
     }
@@ -130,6 +119,11 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     }
     
     private func startRecording() {
+        // Stop the screen from going to sleep while recording video
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        
         videoHelper.startRecording()
         updateState {
             $0.isRecording = true
@@ -137,6 +131,11 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     }
     
     private func stopRecording() {
+        // Reset screen always on to false since the need no longer exists
+        DispatchQueue.main.async {
+            UIApplication.shared.isIdleTimerDisabled = false
+        }
+        
         videoHelper.stopRecording()
         updateState {
             $0.isRecording = false
@@ -151,12 +150,6 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
     
     @objc
     func focusTapped(_ recognizer: UITapGestureRecognizer) {
-        doAfterPermissionCheck { [weak self] in
-            self?.focus(recognizer: recognizer)
-        }
-    }
-    
-    private func focus(recognizer: UITapGestureRecognizer) {
         let point = recognizer.location(in: v.previewViewContainer)
         let viewsize = v.previewViewContainer.bounds.size
         let newPoint = CGPoint(x: point.x/viewsize.width, y: point.y/viewsize.height)
@@ -165,6 +158,17 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         YPHelper.configureFocusView(v.focusView)
         v.addSubview(v.focusView)
         YPHelper.animateFocusView(v.focusView)
+    }
+    
+    // MARK: - Zoom
+    
+    @objc
+    func pinch(_ recognizer: UIPinchGestureRecognizer) {
+        self.zoom(recognizer: recognizer)
+    }
+    
+    func zoom(recognizer: UIPinchGestureRecognizer) {
+        videoHelper.zoom(began: recognizer.state == .began, scale: recognizer.scale)
     }
     
     // MARK: - UI State
@@ -183,7 +187,7 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
         var timeElapsed: TimeInterval = 0
     }
     
-    private func updateState(block:(inout ViewState) -> Void) {
+    private func updateState(block: (inout ViewState) -> Void) {
         block(&viewState)
         updateUIWith(state: viewState)
     }
@@ -225,6 +229,9 @@ public class YPVideoCaptureVC: UIViewController, YPPermissionCheckable {
             case .off: return .off
             case .on: return .on
             case .auto: return .auto
+            @unknown default:
+                ypLog("unknown default reached. Check code.")
+                return .noFlash
             }
         } else {
             return .noFlash

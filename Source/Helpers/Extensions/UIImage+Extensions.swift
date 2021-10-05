@@ -17,10 +17,9 @@ internal extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext()
     }
     
-    /// Kudos to Trevor Harmon and his UIImage+Resize category from
+    // Kudos to Trevor Harmon and his UIImage+Resize category from
     // which this code is heavily inspired.
     func resetOrientation() -> UIImage {
-        
         // Image has no orientation, so keep the same
         if imageOrientation == .up {
             return self
@@ -49,7 +48,7 @@ internal extension UIImage {
             transform = transform.translatedBy(x: size.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
             
-        case .leftMirrored, .rightMirrored:   //EXIF = 5, 7
+        case .leftMirrored, .rightMirrored:   // EXIF = 5, 7
             transform = transform.translatedBy(x: size.height, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
         default:

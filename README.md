@@ -9,7 +9,7 @@ YPImagePicker is an instagram-like photo/video picker for iOS written in pure Sw
 [![Language: Swift 5](https://img.shields.io/badge/language-swift%205-f48041.svg?style=flat)](https://developer.apple.com/swift)
 [![Version](https://img.shields.io/cocoapods/v/YPImagePicker.svg?style=flat)](http://cocoapods.org/pods/YPImagePicker)
 [![Platform](https://img.shields.io/cocoapods/p/YPImagePicker.svg?style=flat)](http://cocoapods.org/pods/YPImagePicker)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![SPM compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://swift.org/package-manager/)
 [![codebeat badge](https://codebeat.co/badges/9710a89d-b1e2-4e55-a4a2-3ae1f98f4c53)](https://codebeat.co/projects/github-com-yummypets-ypimagepicker-master)
 [![License: MIT](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/Yummypets/YPImagePicker/blob/master/LICENSE)
 [![GitHub tag](https://img.shields.io/github/release/Yummypets/YPImagePicker.svg)]()
@@ -41,9 +41,6 @@ And many more...
 
 ## Installation
 
-Drop in the Classes folder to your Xcode project.  
-You can also use CocoaPods or Carthage.
-
 #### Using [CocoaPods](http://cocoapods.org/)
 
 First be sure to run `pod repo update` to get the latest version available.
@@ -56,13 +53,23 @@ pod 'YPImagePicker'
 use_frameworks!
 ```
 
-#### Using [Carthage](https://github.com/Carthage/Carthage)
+#### Using [Swift Package Manager](https://swift.org/package-manager/)
 
-Add `github "Yummypets/YPImagePicker"` to your `Cartfile` and run `carthage update`. If unfamiliar with Carthage then checkout their [Getting Started section](https://github.com/Carthage/Carthage#getting-started).
+Open SPM dependency manager through `File > Swift Pakcages > Add Package Dependency...`.
 
+and insert repository URL:
+
+``https://github.com/Yummypets/YPImagePicker.git``
+
+To add dependency in your own package, just specify a package in dependencies of your `Package.swift`:
+```swift
+.package(
+name: "YPImagePicker",
+url: "https://github.com/Yummypets/YPImagePicker.git",
+.upToNextMajor(from: "5.0.0")
+)
 ```
-github "Yummypets/YPImagePicker"
-```
+Note: This has a minimum target iOS version of `12.0`.
 
 ## Plist entries
 
@@ -100,6 +107,7 @@ config.isScrollToChangeModesEnabled = true
 config.onlySquareImagesFromCamera = true
 config.usesFrontCamera = false
 config.showsPhotoFilters = true
+config.showsVideoTrimmer = true
 config.shouldSaveNewPicturesToAlbum = true
 config.albumName = "DefaultYPImagePickerAlbumName"
 config.startOnScreen = YPPickerScreen.photo
@@ -109,23 +117,30 @@ config.targetImageSize = YPImageSize.original
 config.overlayView = UIView()
 config.hidesStatusBar = true
 config.hidesBottomBar = false
+config.hidesCancelButton = false
 config.preferredStatusBarStyle = UIStatusBarStyle.default
 config.bottomMenuItemSelectedColour = UIColor(r: 38, g: 38, b: 38)
 config.bottomMenuItemUnSelectedColour = UIColor(r: 153, g: 153, b: 153)
 config.filters = [DefaultYPFilters...]
+config.maxCameraZoomFactor = 1.0
+config.preSelectItemOnMultipleSelection = true
+config.fonts..
 ```
 
 ### Library
 ```swift
 config.library.options = nil
 config.library.onlySquare = false
+config.library.isSquareByDefault = true
 config.library.minWidthForItem = nil
 config.library.mediaType = YPlibraryMediaType.photo
+config.library.defaultMultipleSelection = false
 config.library.maxNumberOfItems = 1
 config.library.minNumberOfItems = 1
 config.library.numberOfItemsInRow = 4
 config.library.spacingBetweenItems = 1.0
 config.library.skipSelectionsGallery = false
+config.library.preselectedItems = nil
 ```
 
 ### Video
@@ -139,6 +154,11 @@ config.video.trimmerMaxDuration = 60.0
 config.video.trimmerMinDuration = 3.0
 ```
 
+### Gallery
+```swift
+config.gallery.hidesRemoveButton = false
+```
+
 ## Default Configuration
 
 ```swift
@@ -147,6 +167,15 @@ YPImagePickerConfiguration.shared = config
 
 // And then use the default configuration like so:
 let picker = YPImagePicker()
+```
+
+When displaying picker on iPad, picker will support one size only you should set it before displaying it: 
+```
+let preferredContentSize = CGSize(width: 500, height: 600);
+YPImagePickerConfiguration.widthOniPad = preferredContentSize.width;
+
+// Now you can Display the picker with preferred size in dialog, popup etc
+
 ```
 
 ## Usage
@@ -226,7 +255,7 @@ picker.didFinishPicking { [unowned picker] items, cancelled in
 That's it !
 
 ## Languages
-🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French 🇷🇺 Russian, 🇳🇱 Dutch, 🇧🇷 Brazilian, 🇹🇷 Turkish, 🇸🇾 Arabic, 🇩🇪 German, 🇮🇹 Italian, 🇯🇵 Japanese, 🇨🇳 Chinese, 🇮🇩 Indonesian, 🇰🇷 Korean, 🇹🇼 Traditional Chinese（Taiwan)
+🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French 🇷🇺 Russian, 🇵🇱 Polish, 🇳🇱 Dutch, 🇧🇷 Brazilian, 🇹🇷 Turkish, 🇸🇾 Arabic, 🇩🇪 German, 🇮🇹 Italian, 🇯🇵 Japanese, 🇨🇳 Chinese, 🇮🇩 Indonesian, 🇰🇷 Korean, 🇹🇼 Traditional Chinese（Taiwan), 🇻🇳 Vietnamese, 🇹🇭 Thai, 🇨🇿 Czech. 
 
 If your language is not supported, you can still customize the wordings via the `configuration.wordings` api:
 
@@ -249,14 +278,14 @@ UINavigationBar.appearance().setBackgroundImage(coloredImage, for: UIBarMetrics.
 
 ### Navigation bar fonts
 ```swift
-let attributes = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 30, weight: .bold) ]
+let attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 30, weight: .bold) ]
 UINavigationBar.appearance().titleTextAttributes = attributes // Title fonts
 UIBarButtonItem.appearance().setTitleTextAttributes(attributes, for: .normal) // Bar Button fonts
 ```
 
 ### Navigation bar Text colors
 ```swift
-UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor : UIColor.yellow ] // Title color
+UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.yellow ] // Title color
 UINavigationBar.appearance().tintColor = .red // Left. bar buttons
 config.colors.tintColor = .green // Right bar buttons (actions)
 ```
@@ -288,6 +317,7 @@ Original Fusuma author is [ytakz](http://ytakzk.me)
 [portellaa](https://github.com/portellaa)
 [Romixery](https://github.com/romixery)
 [shotat](https://github.com/shotat)
+[shalamowww](https://github.com/shalamowww)
 
 Special thanks to [ihtiht](https://github.com/ihtiht) for the cool looking logo!
 
@@ -353,3 +383,5 @@ See [LICENSE](LICENSE) for details.
 - Swift 4.2 -> version [**3.5.2**](https://github.com/Yummypets/YPImagePicker/releases/tag/3.5.2)
 releases/tag/3.4.0)
 - Swift 5.0 -> version [**4.0.0**](https://github.com/Yummypets/YPImagePicker/releases/tag/4.0.0)
+- Swift 5.1 -> version [**4.1.2**](https://github.com/Yummypets/YPImagePicker/releases/tag/4.1.2)
+- Swift 5.3 -> version [**4.5.0**](https://github.com/Yummypets/YPImagePicker/releases/tag/4.5.0)

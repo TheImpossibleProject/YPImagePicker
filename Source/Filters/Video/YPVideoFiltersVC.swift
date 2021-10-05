@@ -34,7 +34,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     /// Designated initializer
     public class func initWith(video: YPMediaVideo,
                                isFromSelectionVC: Bool) -> YPVideoFiltersVC {
-        let vc = YPVideoFiltersVC(nibName: "YPVideoFiltersVC", bundle: Bundle(for: YPVideoFiltersVC.self))
+        let vc = YPVideoFiltersVC(nibName: "YPVideoFiltersVC", bundle: Bundle.local)
         vc.inputVideo = video
         vc.isFromSelectionVC = isFromSelectionVC
         
@@ -46,6 +46,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
     override public func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = YPConfig.colors.filterBackgroundColor
         trimmerView.mainColor = YPConfig.colors.trimmerMainColor
         trimmerView.handleColor = YPConfig.colors.trimmerHandleColor
         trimmerView.positionBarColor = YPConfig.colors.positionLineColor
@@ -80,6 +81,7 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
                                                                style: .plain,
                                                                target: self,
                                                                action: #selector(cancel))
+            navigationItem.leftBarButtonItem?.setFont(font: YPConfig.fonts.leftBarButtonFont, forState: .normal)
         }
         setupRightBarButtonItem()
     }
@@ -110,12 +112,16 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
                                                             target: self,
                                                             action: #selector(save))
         navigationItem.rightBarButtonItem?.tintColor = YPConfig.colors.tintColor
+        navigationItem.rightBarButtonItem?.setFont(font: YPConfig.fonts.rightBarButtonFont, forState: .normal)
     }
     
     // MARK: - Top buttons
 
     @objc public func save() {
-        guard let didSave = didSave else { return print("Don't have saveCallback") }
+        guard let didSave = didSave else {
+            return ypLog("Don't have saveCallback")
+        }
+
         navigationItem.rightBarButtonItem = YPLoaders.defaultLoader
 
         do {
@@ -129,18 +135,28 @@ public class YPVideoFiltersVC: UIViewController, IsMediaFilterVC {
             let destinationURL = URL(fileURLWithPath: NSTemporaryDirectory())
                 .appendingUniquePathComponent(pathExtension: YPConfig.video.fileType.fileExtension)
             
-            try trimmedAsset.export(to: destinationURL) { [weak self] in
-                guard let strongSelf = self else { return }
-                
-                DispatchQueue.main.async {
-                    let resultVideo = YPMediaVideo(thumbnail: strongSelf.coverImageView.image!,
-                                                   videoURL: destinationURL, asset: strongSelf.inputVideo.asset)
-                    didSave(YPMediaItem.video(v: resultVideo))
-                    strongSelf.setupRightBarButtonItem()
+            _ = trimmedAsset.export(to: destinationURL) { [weak self] session in
+                switch session.status {
+                case .completed:
+                    DispatchQueue.main.async {
+                        if let coverImage = self?.coverImageView.image {
+                            let resultVideo = YPMediaVideo(thumbnail: coverImage,
+														   videoURL: destinationURL,
+														   asset: self?.inputVideo.asset)
+                            didSave(YPMediaItem.video(v: resultVideo))
+                            self?.setupRightBarButtonItem()
+                        } else {
+                            ypLog("Don't have coverImage.")
+                        }
+                    }
+                case .failed:
+                    ypLog("Export of the video failed. Reason: \(String(describing: session.error))")
+                default:
+                    ypLog("Export session completed with \(session.status) status. Not handled")
                 }
             }
         } catch let error {
-            print("💩 \(error)")
+            ypLog("Error: \(error)")
         }
     }
     

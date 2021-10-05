@@ -10,44 +10,69 @@ import UIKit
 import AVFoundation
 import Photos
 
-public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermissionCheckable {
-    
-    public var didCapturePhoto: ((UIImage) -> Void)?
-    let photoCapture = newPhotoCapture()
+internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermissionCheckable {
+    var didCapturePhoto: ((UIImage) -> Void)?
     let v: YPCameraView!
-    override public func loadView() { view = v }
 
-    public required init() {
+    private let photoCapture = YPPhotoCaptureHelper()
+    private var isInited = false
+    private var videoZoomFactor: CGFloat = 1.0
+
+    override internal func loadView() {
+        view = v
+    }
+
+    internal required init() {
         self.v = YPCameraView(overlayView: YPConfig.overlayView)
         super.init(nibName: nil, bundle: nil)
+
         title = YPConfig.wordings.cameraTitle
+        navigationController?.navigationBar.setTitleFont(font: YPConfig.fonts.navigationBarTitleFont)
+        
+        YPDeviceOrientationHelper.shared.startDeviceOrientationNotifier { _ in }
     }
     
-    public required init?(coder aDecoder: NSCoder) {
+    internal required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func viewDidLoad() {
+    deinit {
+        YPDeviceOrientationHelper.shared.stopDeviceOrientationNotifier()
+    }
+    
+    override internal func viewDidLoad() {
         super.viewDidLoad()
+
         v.flashButton.isHidden = true
         v.flashButton.addTarget(self, action: #selector(flashButtonTapped), for: .touchUpInside)
         v.shotButton.addTarget(self, action: #selector(shotButtonTapped), for: .touchUpInside)
         v.flipButton.addTarget(self, action: #selector(flipButtonTapped), for: .touchUpInside)
         
+        // Prevent flip and shot button clicked at the same time
+        v.shotButton.isExclusiveTouch = true
+        v.flipButton.isExclusiveTouch = true
+        
         // Focus
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.focusTapped(_:)))
         tapRecognizer.delegate = self
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
+        
+        // Zoom
+        let pinchRecongizer = UIPinchGestureRecognizer(target: self, action: #selector(self.pinch(_:)))
+        pinchRecongizer.delegate = self
+        v.previewViewContainer.addGestureRecognizer(pinchRecongizer)
     }
     
     func start() {
-        doAfterPermissionCheck { [weak self] in
-            guard let strongSelf = self else {
+        doAfterCameraPermissionCheck { [weak self] in
+            guard let previewContainer = self?.v.previewViewContainer else {
                 return
             }
-            self?.photoCapture.start(with: strongSelf.v.previewViewContainer, completion: {
+
+            self?.photoCapture.start(with: previewContainer, completion: {
                 DispatchQueue.main.async {
-                    self?.refreshFlashButton()
+                    self?.isInited = true
+                    self?.updateFlashButtonUI()
                 }
             })
         }
@@ -55,9 +80,11 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
 
     @objc
     func focusTapped(_ recognizer: UITapGestureRecognizer) {
-        doAfterPermissionCheck { [weak self] in
-            self?.focus(recognizer: recognizer)
+        guard isInited else {
+            return
         }
+        
+        self.focus(recognizer: recognizer)
     }
     
     func focus(recognizer: UITapGestureRecognizer) {
@@ -75,23 +102,34 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         v.addSubview(v.focusView)
         YPHelper.animateFocusView(v.focusView)
     }
+    
+    @objc
+    func pinch(_ recognizer: UIPinchGestureRecognizer) {
+        guard isInited else {
+            return
+        }
         
+        self.zoom(recognizer: recognizer)
+    }
+    
+    func zoom(recognizer: UIPinchGestureRecognizer) {
+        photoCapture.zoom(began: recognizer.state == .began, scale: recognizer.scale)
+    }
+
     func stopCamera() {
         photoCapture.stopCamera()
     }
     
     @objc
     func flipButtonTapped() {
-        doAfterPermissionCheck { [weak self] in
-            self?.photoCapture.flipCamera {
-                self?.refreshFlashButton()
-            }
+        self.photoCapture.flipCamera {
+            self.updateFlashButtonUI()
         }
     }
     
     @objc
     func shotButtonTapped() {
-        doAfterPermissionCheck { [weak self] in
+        doAfterCameraPermissionCheck { [weak self] in
             self?.shoot()
         }
     }
@@ -100,7 +138,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         // Prevent from tapping multiple times in a row
         // causing a crash
         v.shotButton.isEnabled = false
-        
+
         photoCapture.shoot { imageData in
             
             guard let shotImage = UIImage(data: imageData) else {
@@ -120,15 +158,16 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
                 image = self.flipImage(image: image)
             }
             
+            let noOrietationImage = image.resetOrientation()
+            
             DispatchQueue.main.async {
-                let noOrietationImage = image.resetOrientation()
                 self.didCapturePhoto?(noOrietationImage.resizedImageIfNeeded())
             }
         }
     }
     
     func cropImageToSquare(_ image: UIImage) -> UIImage {
-        let orientation: UIDeviceOrientation = UIDevice.current.orientation
+        let orientation: UIDeviceOrientation = YPDeviceOrientationHelper.shared.currentDeviceOrientation
         var imageWidth = image.size.width
         var imageHeight = image.size.height
         switch orientation {
@@ -166,13 +205,15 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
     
     @objc
     func flashButtonTapped() {
-        photoCapture.tryToggleFlash()
-        refreshFlashButton()
+        photoCapture.device?.tryToggleTorch()
+        updateFlashButtonUI()
     }
     
-    func refreshFlashButton() {
-        let flashImage = photoCapture.currentFlashMode.flashImage()
-        v.flashButton.setImage(flashImage, for: .normal)
-        v.flashButton.isHidden = !photoCapture.hasFlash
+    func updateFlashButtonUI() {
+        DispatchQueue.main.async {
+            let flashImage = self.photoCapture.currentFlashMode.flashImage()
+            self.v.flashButton.setImage(flashImage, for: .normal)
+            self.v.flashButton.isHidden = !self.photoCapture.hasFlash
+        }
     }
 }
