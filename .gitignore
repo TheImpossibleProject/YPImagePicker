@@ -19,6 +19,11 @@ DerivedData
 *.hmap
 *.ipa
 
+# Swift Package Manager
+Package.resolved
+.siwftpm/xcode/xcshareddata
+.swiftpm/xcode/xcuserdata
+
 # Bundler
 .bundle
 
