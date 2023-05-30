@@ -19,7 +19,27 @@ extension YPLibraryVC: PHPhotoLibraryChangeObserver {
             let fetchResult = (self.mediaManager as! LibraryMediaManager).fetchResult!
             let collectionChanges = changeInstance.changeDetails(for: fetchResult)
             if collectionChanges != nil {
-                self.mediaManager.set(fetchResult: collectionChanges!.fetchResultAfterChanges)
+                let fetchResultAfterChanges = collectionChanges!.fetchResultAfterChanges
+                self.mediaManager.set(fetchResult: fetchResultAfterChanges)
+                // We receive photo library update
+                // We need to check whether it has assets or no
+                let isNotEmpty = fetchResultAfterChanges.count > 0
+                guard isNotEmpty else {
+                    // if it doesn't - we should close image picker
+                    self.delegate?.noPhotosForOptions()
+                    return
+                }
+                // if it has some - we should update our presentation and select the first one
+                let indexPath = IndexPath(row: 0, section: 0)
+                self.currentlySelectedIndex = indexPath.row
+                let asset = self.mediaManager.asset(
+                    at: indexPath.row,
+                    inverseSorted: self.requiresInverseSorting
+                )
+                self.changeAsset(asset)
+                self.selection.removeAll()
+                self.addToSelection(indexPath: indexPath)
+
                 let collectionView = self.v.collectionView!
                 if !collectionChanges!.hasIncrementalChanges || collectionChanges!.hasMoves {
                     collectionView.reloadData()
