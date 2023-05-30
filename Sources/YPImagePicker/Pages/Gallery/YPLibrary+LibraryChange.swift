@@ -21,11 +21,15 @@ extension YPLibraryVC: PHPhotoLibraryChangeObserver {
             if collectionChanges != nil {
                 let fetchResultAfterChanges = collectionChanges!.fetchResultAfterChanges
                 self.mediaManager.set(fetchResult: fetchResultAfterChanges)
-                let isNotEmpty: Bool = fetchResultAfterChanges.count > 0
+                // We receive photo library update
+                // We need to check whether it has assets or no
+                let isNotEmpty = fetchResultAfterChanges.count > 0
                 guard isNotEmpty else {
+                    // if it doesn't - we should close image picker
                     self.delegate?.noPhotosForOptions()
                     return
                 }
+                // if it has some - we should update our presentation and select the first one
                 let indexPath = IndexPath(row: 0, section: 0)
                 self.currentlySelectedIndex = indexPath.row
                 let asset = self.mediaManager.asset(
